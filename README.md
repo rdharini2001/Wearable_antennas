@@ -2,9 +2,10 @@
 
 [**Explore the interactive antenna atlas**](docs/index.html) &nbsp;·&nbsp; [**Research article**](https://doi.org/10.1109/GCITC60406.2023.10425975) &nbsp;·&nbsp; [**Methods**](docs/METHODS.md) &nbsp;·&nbsp; [**Results**](docs/RESULTS.md) &nbsp;·&nbsp; [**References**](docs/REFERENCES.md)
 
-**WEAVE** is a computational companion to *Ant Colony Optimization Based Support Vector Regression Algorithm for Performance Prediction of Wearable Textile Antennas* (IEEE GCITC, 2023). It implements the manuscript's 12 regression families under two feature configurations, a 21-ant optimization study, Gaussian-kernel refinement, a numerical scoring framework, and a static interactive atlas of patch-antenna design and performance.
-
 ![WEAVE RF-textile research atlas](docs/media/weave-overview.png)
+
+
+**WEAVE** is a computational companion to *Ant Colony Optimization Based Support Vector Regression Algorithm for Performance Prediction of Wearable Textile Antennas* (IEEE GCITC, 2023). It implements the manuscript's 12 regression families under two feature configurations, a 21-ant optimization study, Gaussian-kernel refinement, a numerical scoring framework, and a static interactive atlas of patch-antenna design and performance.
 
 The complete workflow operates on the **1,266 numerical antenna records** in `data/comm_antenna.csv`, covering eight distinct patch/slot geometries, operating frequencies from 1 to 3.5 GHz, and recorded signal strengths. The dataset originates from [reference 16 of the paper](https://github.com/MHassaanButt/Antenna-design-using-ML).
 
