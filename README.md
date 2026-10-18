@@ -1,12 +1,8 @@
 <div align="center">
 
-# WEAVE
+### Wearable Textile Antenna Intelligence: Ant-Colony-Optimized Support Vector Regression for Antenna Performance Modeling**
 
-### Wearable Textile Antenna Intelligence
-
-**Ant-Colony-Optimized Support Vector Regression for Antenna Performance Modeling**
-
-[**Interactive RF Laboratory**](docs/index.html) · [**IEEE Conference Paper**](https://doi.org/10.1109/GCITC60406.2023.10425975) · [**Methods**](docs/METHODS.md) · [**Results**](docs/RESULTS.md) · [**Literature**](docs/REFERENCES.md)
+[**Interactive RF Laboratory**](https://rdharini2001.github.io/Wearable_antennas/) · [**IEEE Conference Paper**](https://doi.org/10.1109/GCITC60406.2023.10425975) · [**Methods**](docs/METHODS.md) · [**Results**](docs/RESULTS.md) · [**Literature**](docs/REFERENCES.md)
 
 </div>
 
