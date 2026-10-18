@@ -1,0 +1,21 @@
+cff-version: 1.2.0
+message: "If you use this computational companion, cite the original IEEE publication."
+title: "WEAVE: Wearable Textile Antenna Intelligence"
+type: software
+abstract: "Reproducible ACO-SVR modeling and retrospective numerical calibration for wearable textile antenna response."
+references:
+  - type: conference-paper
+    title: "Ant Colony Optimization Based Support Vector Regression Algorithm for Performance Prediction of Wearable Textile Antennas"
+    authors:
+      - family-names: Raghavan
+        given-names: Dharini
+      - family-names: Sujatha
+        given-names: B.
+      - family-names: Chinmayi
+        given-names: B. S.
+      - family-names: Rao
+        given-names: Bhavana B.
+      - family-names: Kiran
+        given-names: John
+    year: 2023
+    doi: 10.1109/GCITC60406.2023.10425975

@@ -1,0 +1,9 @@
+component,dimension_mm,source
+Substrate width,48,Paper Fig. 6
+Substrate length,48,Paper Fig. 6
+Patch width,30,Paper Fig. 6
+Patch length,30,Paper Fig. 6
+Slot width,4,Paper Fig. 6
+Slot length,12,Paper Fig. 6
+Feedline width,3,Paper Fig. 6
+Feedline length,12,Paper Fig. 6

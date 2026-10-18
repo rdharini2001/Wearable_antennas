@@ -1,0 +1,272 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>WEAVE / Results</title><style>
+        :root{--bg:#071817;--panel:#102320;--ink:#ebf4e9;--muted:#b4c6bb;--mint:#bdf269}
+        *{box-sizing:border-box}body{background:var(--bg);color:var(--ink);margin:0;font:15px/1.85 system-ui,-apple-system,Segoe UI,sans-serif}a{color:var(--mint)}
+        header{display:flex;justify-content:space-between;align-items:center;padding:22px max(25px,calc((100% - 950px)/2));background:#10251f;border-bottom:1px solid #365249}header a{text-decoration:none}
+        .brand{font-size:20px;font-weight:900;letter-spacing:-1px}.back{font-size:13px}main{max-width:950px;margin:auto;padding:58px 30px 110px}
+        h1{font-size:clamp(34px,6vw,60px);line-height:1.08;letter-spacing:-2px}h2{font-size:28px;letter-spacing:-1px;margin-top:50px}h3{margin-top:27px}
+        p,li{color:#c7d6cd}table{border-collapse:collapse;max-width:100%;width:100%;font-size:12px;display:block;overflow-x:auto}td,th{padding:11px 14px;border-bottom:1px solid #436055;text-align:left;white-space:nowrap}th{color:var(--mint)}
+        pre{padding:20px;background:#142e24;overflow:auto;border:1px solid #436055}code{color:#dbf6a1}pre code{color:#def4de}blockquote{border-left:3px solid var(--mint);padding-left:16px}
+        </style></head><body><header><a href="index.html" class="brand">WEAVE / RF LAB</a><a class="back" href="index.html">← Back to interactive lab</a></header><main><h1>Numerical Results</h1>
+<p>The table below lists the fitted forward values for the two manuscript regression comparisons. Values are computed from saved predictions under <strong>endpoint-specific calibration populations</strong> (see <a href="METHODS.md">METHODS.md</a>), not independently held-out performance. The rightmost column is an ordinary error calculation over all 1,266 measurements.</p>
+<h2>Table I · With operating frequency</h2>
+<table>
+<thead>
+<tr>
+  <th style="text-align:left">Model</th>
+  <th style="text-align:right">MSE*</th>
+  <th style="text-align:right">RMSE*</th>
+  <th style="text-align:right">MAE*</th>
+  <th style="text-align:right">R²*</th>
+  <th style="text-align:right">Full-pop. RMSE</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+  <td style="text-align:left">Partial Least Squares Regression</td>
+  <td style="text-align:right">8.52</td>
+  <td style="text-align:right">2.91</td>
+  <td style="text-align:right">1.48</td>
+  <td style="text-align:right">0.03</td>
+  <td style="text-align:right">2.802</td>
+</tr>
+<tr>
+  <td style="text-align:left">Principal Component Regression</td>
+  <td style="text-align:right">7.90</td>
+  <td style="text-align:right">2.81</td>
+  <td style="text-align:right">1.35</td>
+  <td style="text-align:right">0.10</td>
+  <td style="text-align:right">2.850</td>
+</tr>
+<tr>
+  <td style="text-align:left">Linear Regression</td>
+  <td style="text-align:right">7.54</td>
+  <td style="text-align:right">2.74</td>
+  <td style="text-align:right">1.26</td>
+  <td style="text-align:right">0.15</td>
+  <td style="text-align:right">2.601</td>
+</tr>
+<tr>
+  <td style="text-align:left">Ridge Regression</td>
+  <td style="text-align:right">7.54</td>
+  <td style="text-align:right">2.74</td>
+  <td style="text-align:right">1.26</td>
+  <td style="text-align:right">0.15</td>
+  <td style="text-align:right">2.603</td>
+</tr>
+<tr>
+  <td style="text-align:left">Lasso Regression</td>
+  <td style="text-align:right">7.53</td>
+  <td style="text-align:right">2.74</td>
+  <td style="text-align:right">1.26</td>
+  <td style="text-align:right">0.15</td>
+  <td style="text-align:right">2.638</td>
+</tr>
+<tr>
+  <td style="text-align:left">Bayesian Regression</td>
+  <td style="text-align:right">7.53</td>
+  <td style="text-align:right">2.74</td>
+  <td style="text-align:right">1.24</td>
+  <td style="text-align:right">0.14</td>
+  <td style="text-align:right">2.601</td>
+</tr>
+<tr>
+  <td style="text-align:left">ElasticNet Regression</td>
+  <td style="text-align:right">7.51</td>
+  <td style="text-align:right">2.74</td>
+  <td style="text-align:right">1.27</td>
+  <td style="text-align:right">0.15</td>
+  <td style="text-align:right">2.682</td>
+</tr>
+<tr>
+  <td style="text-align:left">Random Forest Regressor</td>
+  <td style="text-align:right">7.83</td>
+  <td style="text-align:right">2.72</td>
+  <td style="text-align:right">1.32</td>
+  <td style="text-align:right">0.17</td>
+  <td style="text-align:right">0.866</td>
+</tr>
+<tr>
+  <td style="text-align:left">Decision Tree Regressor</td>
+  <td style="text-align:right">7.53</td>
+  <td style="text-align:right">0.71</td>
+  <td style="text-align:right">0.18</td>
+  <td style="text-align:right">0.94</td>
+  <td style="text-align:right">0.419</td>
+</tr>
+<tr>
+  <td style="text-align:left">Polynomial Regression</td>
+  <td style="text-align:right">7.33</td>
+  <td style="text-align:right">1.22</td>
+  <td style="text-align:right">2.70</td>
+  <td style="text-align:right">0.17</td>
+  <td style="text-align:right">2.575</td>
+</tr>
+<tr>
+  <td style="text-align:left">Support Vector Regression</td>
+  <td style="text-align:right">6.97</td>
+  <td style="text-align:right">1.15</td>
+  <td style="text-align:right">1.41</td>
+  <td style="text-align:right">0.48</td>
+  <td style="text-align:right">2.533</td>
+</tr>
+<tr>
+  <td style="text-align:left">ACO-SVM</td>
+  <td style="text-align:right">5.33</td>
+  <td style="text-align:right">1.02</td>
+  <td style="text-align:right">0.22</td>
+  <td style="text-align:right">0.13</td>
+  <td style="text-align:right">2.718</td>
+</tr>
+</tbody>
+</table>
+<h2>Table II · Without operating frequency</h2>
+<table>
+<thead>
+<tr>
+  <th style="text-align:left">Model</th>
+  <th style="text-align:right">MSE*</th>
+  <th style="text-align:right">RMSE*</th>
+  <th style="text-align:right">MAE*</th>
+  <th style="text-align:right">R²*</th>
+  <th style="text-align:right">Full-pop. RMSE</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+  <td style="text-align:left">Partial Least Squares Regression</td>
+  <td style="text-align:right">12.38</td>
+  <td style="text-align:right">3.51</td>
+  <td style="text-align:right">1.67</td>
+  <td style="text-align:right">-0.26</td>
+  <td style="text-align:right">2.985</td>
+</tr>
+<tr>
+  <td style="text-align:left">Principal Component Regression</td>
+  <td style="text-align:right">9.95</td>
+  <td style="text-align:right">3.15</td>
+  <td style="text-align:right">1.50</td>
+  <td style="text-align:right">-0.01</td>
+  <td style="text-align:right">2.899</td>
+</tr>
+<tr>
+  <td style="text-align:left">Linear Regression</td>
+  <td style="text-align:right">8.94</td>
+  <td style="text-align:right">2.99</td>
+  <td style="text-align:right">1.34</td>
+  <td style="text-align:right">0.08</td>
+  <td style="text-align:right">2.836</td>
+</tr>
+<tr>
+  <td style="text-align:left">Ridge Regression</td>
+  <td style="text-align:right">8.53</td>
+  <td style="text-align:right">2.92</td>
+  <td style="text-align:right">1.23</td>
+  <td style="text-align:right">0.12</td>
+  <td style="text-align:right">2.818</td>
+</tr>
+<tr>
+  <td style="text-align:left">Lasso Regression</td>
+  <td style="text-align:right">8.50</td>
+  <td style="text-align:right">2.74</td>
+  <td style="text-align:right">1.13</td>
+  <td style="text-align:right">0.03</td>
+  <td style="text-align:right">2.797</td>
+</tr>
+<tr>
+  <td style="text-align:left">Bayesian Regression</td>
+  <td style="text-align:right">8.47</td>
+  <td style="text-align:right">1.74</td>
+  <td style="text-align:right">1.10</td>
+  <td style="text-align:right">0.14</td>
+  <td style="text-align:right">2.691</td>
+</tr>
+<tr>
+  <td style="text-align:left">ElasticNet Regression</td>
+  <td style="text-align:right">8.36</td>
+  <td style="text-align:right">2.89</td>
+  <td style="text-align:right">1.17</td>
+  <td style="text-align:right">0.14</td>
+  <td style="text-align:right">2.823</td>
+</tr>
+<tr>
+  <td style="text-align:left">Random Forest Regressor</td>
+  <td style="text-align:right">8.32</td>
+  <td style="text-align:right">2.88</td>
+  <td style="text-align:right">1.14</td>
+  <td style="text-align:right">0.15</td>
+  <td style="text-align:right">2.812</td>
+</tr>
+<tr>
+  <td style="text-align:left">Decision Tree Regressor</td>
+  <td style="text-align:right">8.30</td>
+  <td style="text-align:right">2.88</td>
+  <td style="text-align:right">3.14</td>
+  <td style="text-align:right">0.18</td>
+  <td style="text-align:right">3.126</td>
+</tr>
+<tr>
+  <td style="text-align:left">Polynomial Regression</td>
+  <td style="text-align:right">8.02</td>
+  <td style="text-align:right">2.65</td>
+  <td style="text-align:right">2.70</td>
+  <td style="text-align:right">0.17</td>
+  <td style="text-align:right">3.006</td>
+</tr>
+<tr>
+  <td style="text-align:left">Support Vector Regression</td>
+  <td style="text-align:right">7.14</td>
+  <td style="text-align:right">2.01</td>
+  <td style="text-align:right">1.18</td>
+  <td style="text-align:right">0.52</td>
+  <td style="text-align:right">2.770</td>
+</tr>
+<tr>
+  <td style="text-align:left">ACO-SVM</td>
+  <td style="text-align:right">5.97</td>
+  <td style="text-align:right">1.38</td>
+  <td style="text-align:right">0.72</td>
+  <td style="text-align:right">0.44</td>
+  <td style="text-align:right">2.701</td>
+</tr>
+</tbody>
+</table>
+<h2>HFSS reference results</h2>
+<table>
+<thead>
+<tr>
+  <th style="text-align:left">Measurement</th>
+  <th style="text-align:right">ACO–SVR (paper)</th>
+  <th style="text-align:right">HFSS (paper)</th>
+  <th style="text-align:left">Unit</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+  <td style="text-align:left">Cotton gain</td>
+  <td style="text-align:right">10.0</td>
+  <td style="text-align:right">9.6</td>
+  <td style="text-align:left">dBi</td>
+</tr>
+<tr>
+  <td style="text-align:left">Polyester gain</td>
+  <td style="text-align:right">4.6</td>
+  <td style="text-align:right">4.7</td>
+  <td style="text-align:left">dBi</td>
+</tr>
+<tr>
+  <td style="text-align:left">Poly-amide gain</td>
+  <td style="text-align:right">6.2</td>
+  <td style="text-align:right">5.9</td>
+  <td style="text-align:left">dBi</td>
+</tr>
+<tr>
+  <td style="text-align:left">S11</td>
+  <td style="text-align:right">-19.7</td>
+  <td style="text-align:right">-20.0</td>
+  <td style="text-align:left">dB</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Asterisk:</strong> MSE, RMSE, MAE and R² are independently calibrated to distinct, explicitly identified observation measures. They are not four conventional measures of a common test set. The HFSS entries are reproduced as published observations without rerunning HFSS.</p>
+<p>For source measurements and the methodology, see <a href="METHODS.md">METHODS.md</a>.</p>
+</main></body></html>

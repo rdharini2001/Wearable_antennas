@@ -1,0 +1,5 @@
+substrate,relative_permittivity,gain_dbi,frequency_ghz
+Cotton / free space,1.1,6.8,2.4
+Cotton / body-loaded,1.1,9.6,2.4
+Polyester,4.2,4.7,2.4
+Poly-amide,2.7,5.9,2.4
