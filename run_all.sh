@@ -1,11 +1,23 @@
 #!/usr/bin/env bash
 set -euo pipefail
+cd "$(dirname "$0")"
 case "${1:---verify}" in
- --download) python -m src.data --download ;;
- --train) python -m src.train --aco; python -m src.forward --verify; python -m src.plotting; python -m src.build_site ;;
- --train-fast) python -m src.train; python -m src.forward --verify; python -m src.plotting; python -m src.build_site ;;
- --verify) python -m src.forward --verify; python -m src.plotting; python -m src.build_site ;;
- --site) python -m src.build_site ;;
- --test) python -m unittest discover -s tests -v ;;
- *) echo 'Usage: bash run_all.sh [--download|--train|--train-fast|--verify|--site|--test]' >&2; exit 2 ;;
+ --train)
+    python -m src.aco
+    python -m src.train
+    python -m src.forward
+    python -m src.verify
+    python -m src.build_site
+    python -m unittest discover -s tests -v
+    ;;
+ --verify)
+    python -m src.forward
+    python -m src.verify
+    python -m src.build_site
+    python -m unittest discover -s tests -v
+    ;;
+ --aco)
+    python -m src.aco
+    ;;
+ *) echo 'Usage: bash run_all.sh [--train|--verify|--aco]' >&2; exit 2;;
 esac

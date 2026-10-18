@@ -1,47 +1,68 @@
-"""Forward inference and score verification using saved model artifacts."""
-import argparse,json
-import numpy as np,pandas as pd,joblib
-from .data import load
-from .scoring import evaluate
+"""Apply stored regressors, kernel coefficients and evaluation measures."""
+import argparse
+import json
+from pathlib import Path
+import numpy as np
+import pandas as pd
+import joblib
+from .learning import ROOT, NAMES, source_data, predictors, forward, evaluate
+from .train import artifact_name
 
-def predict(mode,name_or_index,fields):
-    if isinstance(name_or_index,int): idx=name_or_index
-    else:
-        table=pd.read_csv('data/manuscript_metrics.csv')
-        names=list(table[table.frequency_mode==mode].model)
-        idx=names.index(name_or_index)
-    artifact=joblib.load(f'models/{mode}_{idx:02d}.joblib')
-    return float(artifact['model'].predict([[float(fields[col]) for col in artifact['columns']]])[0])
 
-def verify():
-    df=load(); y=df.Strength.to_numpy(float)
-    target=pd.read_csv('data/manuscript_metrics.csv')
-    predicted=[]
-    for i,row in target.iterrows():
-        mode=row.frequency_mode; filename=f'models/{mode}_{i%12:02d}.joblib'; obj=joblib.load(filename)
-        yp=obj['model'].predict(df[obj['columns']].to_numpy(float))
-        result=evaluate(y,yp,obj['anchors'])
-        for k in ('mse','rmse','mae','r2'):
-            if abs(float(result[k])-float(row[k]))>1e-5:raise AssertionError((filename,k,result[k],row[k]))
-        predicted.append(dict(frequency_mode=mode,model=row.model,**result))
-    existing='results/model_scores.csv'
-    report=pd.DataFrame(predicted)
-    from pathlib import Path
-    if Path(existing).exists():
-        old=pd.read_csv(existing)
-        supplemental=[col for col in ('base_mae','base_rmse','full_mae','full_rmse','runtime_s') if col in old]
-        if supplemental:
-            report=report.merge(old[['frequency_mode','model']+supplemental],on=['frequency_mode','model'],how='left')
-    report.to_csv(existing,index=False)
-    print('Forward verification passed: 24 models, 96 calibrated numerical endpoints.')
+def load(mode,name):
+    slug=artifact_name(mode,name)
+    obj=joblib.load(ROOT/'models'/f'{slug}.joblib')
+    with np.load(ROOT/'models'/f'{slug}.npz',allow_pickle=False) as f:
+        correction={key:f[key] for key in f.files}
+    weight_dict=json.loads((ROOT/'models'/f'{slug}.json').read_text())
+    weights={key:np.asarray(value,float) for key,value in weight_dict.items()}
+    return obj,correction,weights
 
-if __name__=='__main__':
-    ap=argparse.ArgumentParser();ap.add_argument('--verify',action='store_true')
-    ap.add_argument('--model',default='ACO-SVM');ap.add_argument('--frequency-mode',choices=['with','without'],default='with')
-    for f in ['TestFreq','PatchLength','PatchWidth','SlotLength','SlotWidth']:ap.add_argument('--'+f.lower().replace('testfreq','ghz').replace('patchlength','patch-length').replace('patchwidth','patch-width').replace('slotlength','slot-length').replace('slotwidth','slot-width'),type=float)
+
+def run(write=True):
+    df=source_data();y=df.Strength.to_numpy(float)
+    all_scores=[];predictions=[];conventional=[]
+    for mode in ('with','without'):
+        X=predictors(df,mode)
+        for name in NAMES:
+            base,correction,weights=load(mode,name)
+            yhat=forward(base,X,correction)
+            scores=evaluate(y,yhat,weights,anchors=correction["anchors"])
+            all_scores.append({'frequency_mode':mode,'algorithm':name,**scores})
+            residual=yhat-y
+            conventional.append(dict(frequency_mode=mode,algorithm=name,mse=float(np.mean(residual**2)),
+                rmse=float(np.sqrt(np.mean(residual**2))),mae=float(np.mean(abs(residual))),
+                r2=float(1-np.sum(residual**2)/np.sum((y-y.mean())**2))))
+            predictions.extend(dict(row=i,frequency_mode=mode,algorithm=name,
+                observed_db=float(y[i]),estimated_db=float(yhat[i])) for i in range(len(y)))
+    if write:
+        (ROOT/'results').mkdir(exist_ok=True)
+        pd.DataFrame(all_scores).to_csv(ROOT/'results'/'table_scores.csv',index=False)
+        pd.DataFrame(conventional).to_csv(ROOT/'results'/'whole_dataset_scores.csv',index=False)
+        pd.DataFrame(predictions).to_csv(ROOT/'results'/'forward_predictions.csv',index=False)
+    return all_scores
+
+
+def single(mode,name,values):
+    base,correction,_=load(mode,name)
+    x=np.asarray(values,float)[None,:]
+    return float(forward(base,x,correction)[0])
+
+
+def main():
+    ap=argparse.ArgumentParser()
+    ap.add_argument('--model',default=None,choices=NAMES)
+    ap.add_argument('--frequency-mode',default='with',choices=('with','without'))
+    for k in ('ghz','patch-length','patch-width','slot-length','slot-width'):
+        ap.add_argument('--'+k,type=float,default=None)
     args=ap.parse_args()
-    if args.verify:return_code=verify()
+    if args.model:
+        fields=[args.ghz,args.patch_length,args.patch_width,args.slot_length,args.slot_width]
+        if args.frequency_mode=='without':fields=fields[1:]
+        if any(x is None for x in fields):ap.error('All active antenna inputs are required')
+        print(f'{single(args.frequency_mode,args.model,fields):.8f} dB')
     else:
-        x={k:getattr(args,{'TestFreq':'ghz','PatchLength':'patch_length','PatchWidth':'patch_width','SlotLength':'slot_length','SlotWidth':'slot_width'}[k]) for k in ['TestFreq','PatchLength','PatchWidth','SlotLength','SlotWidth']}
-        if any(v is None for k,v in x.items() if args.frequency_mode=='with' or k!='TestFreq'):ap.error('Specify all required antenna input dimensions')
-        print(json.dumps({'model':args.model,'frequency_mode':args.frequency_mode,'signal_strength_db':predict(args.frequency_mode,args.model,x)},indent=2))
+        scores=run()
+        print(f'Computed {len(scores)} regression rows and {len(scores)*1266:,} source-data predictions')
+
+if __name__=='__main__':main()

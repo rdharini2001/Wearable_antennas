@@ -1,0 +1,5 @@
+substrate,body_tissue,dielectric_constant,gain_dbi,frequency_ghz
+Cotton,No,1.1,6.8,2.4
+Cotton,Yes,1.1,9.6,2.4
+Polyester,No,4.2,4.7,2.4
+Poly-amide,No,2.7,5.9,2.4

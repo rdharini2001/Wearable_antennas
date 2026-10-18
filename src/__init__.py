@@ -1,1 +1,1 @@
-"""WEAVE: textile antenna modeling and numerical calibration."""
+"""WEAVE: antenna design regression models and scoring operators."""

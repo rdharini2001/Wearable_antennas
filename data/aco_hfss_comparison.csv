@@ -1,0 +1,5 @@
+parameter,aco_svm,simulation,unit
+Cotton gain,10,9.6,dBi
+Polyester gain,4.6,4.7,dBi
+Poly-amide gain,6.2,5.9,dBi
+Reflection coefficient S11,-19.7,-20,dB

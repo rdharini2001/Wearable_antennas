@@ -1,5 +1,8 @@
 __pycache__/
 .pytest_cache/
-*.pyc
+*.py[cod]
+.ipynb_checkpoints/
 .DS_Store
+.env
 .venv/
+*.swp

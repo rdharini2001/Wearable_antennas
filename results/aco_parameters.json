@@ -1,6 +1,7 @@
 {
-  "C": 40.0,
-  "sigma": 10.0,
-  "empirical_minimum": 0.4083220169352452,
-  "constrained_C_40_sigma_10_MAE": 1.0396016827923402
+  "C": 80.0,
+  "sigma": 0.5,
+  "validation_mae": 0.43403886019864907,
+  "ants": 21,
+  "iterations": 240
 }
