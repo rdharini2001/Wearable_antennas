@@ -1,12 +1,6 @@
-# WEAVE
+# WEAVE: Ant colony optimization and support vector regression for wearable textile antennas
 
-### Ant colony optimization and support vector regression for wearable textile antennas
-
-<<<<<<< Updated upstream
-[**Research website**](https://rdharini2001.github.io/Wearable_antennas/) · [**Supplementary methods (PDF)**](docs/SUPPLEMENTARY_METHODS.pdf) · [**Source paper**](https://doi.org/10.1109/GCITC60406.2023.10425975) · [**Numerical results**](docs/RESULTS.md) · [**References**](docs/REFERENCES.md)
-=======
 [**Explore the research atlas**](docs/index.html) · [**Supplementary Information (PDF)**](docs/SUPPLEMENTARY_METHODS.pdf) · [**Research article**](https://doi.org/10.1109/GCITC60406.2023.10425975) · [**Methods**](docs/METHODS.md) · [**Results**](docs/RESULTS.md) · [**References**](docs/REFERENCES.md)
->>>>>>> Stashed changes
 
 ![Textile patch antenna, resonant field and frequency-response geometry](docs/assets/antenna-atlas.svg)
 
