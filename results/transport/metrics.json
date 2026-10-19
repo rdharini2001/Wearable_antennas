@@ -30,6 +30,6 @@
     "SlotWidth",
     "TestFreq"
   ],
-  "model": "Shared frequency-marginalized spectral distribution head (all 12 regressor families)",
+  "model": "Geometry-conditioned spectral response distribution",
   "test_labels_used_to_fit": false
 }

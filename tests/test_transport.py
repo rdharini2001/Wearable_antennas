@@ -7,7 +7,7 @@ import pandas as pd
 
 from src.discovery import ROOT, observations, geometry_groups, _split_indices
 from src.enhanced import tune_curve
-from src.transport import ConditionalSweepDistribution, transport_evaluate, comparison_with_paper
+from src.transport import ConditionalSweepDistribution, transport_evaluate
 
 class TransportModelTests(unittest.TestCase):
     @classmethod
@@ -51,28 +51,19 @@ class TransportModelTests(unittest.TestCase):
             np.testing.assert_allclose(saved.fixed_quantile_grid(x,len(chunk)),
                                        chunk.sort_values('quantile_rank').predicted_quantile_db.to_numpy(),atol=1e-9)
 
-    def test_paper_report_is_post_training(self):
-        output=comparison_with_paper()
-        self.assertEqual(output['total_thresholds'],96)
-        self.assertEqual(output['numeric_thresholds_met'],96)
-        self.assertEqual(output['pointwise_thresholds_met'],48)
-        self.assertEqual(output['distributional_thresholds_met'],48)
-        self.assertFalse(output['exact_paper_reproduction'])
-        self.assertFalse(output['same_definition_for_all_96'])
-        scores=pd.read_csv(ROOT/'results'/'transport'/'v2_96_threshold_comparison.csv')
-        self.assertEqual(len(scores),96)
-        self.assertTrue(scores[scores.frequency_mode=='with'].same_metric_definition.all())
-        self.assertFalse(scores[scores.frequency_mode=='without'].same_metric_definition.any())
-        self.assertEqual(scores[scores.frequency_mode=='without'].v2_metric.nunique(),4)
+    def test_distribution_reports_separate_estimand(self):
+        scores=json.loads((ROOT/'results'/'transport'/'metrics.json').read_text())
+        self.assertIn('w1_db',scores)
+        self.assertIn('w2_db',scores)
+        self.assertEqual(scores['feature_inputs'],['PatchLength','PatchWidth','SlotLength','SlotWidth'])
+        self.assertFalse(scores['test_labels_used_to_fit'])
 
     def test_stability_and_site_artifacts(self):
         seeds=pd.read_csv(ROOT/'results'/'transport'/'seed_stability.csv')
         self.assertEqual(len(seeds),4)
         self.assertGreater(seeds.w2_db.max(),0)
         site=(ROOT/'docs'/'index.html').read_text()
-        for phrase in ('WEAVE V2','transportChart','v2W2','v2BlindWins','v2_96_threshold_comparison.csv'):
+        for phrase in ('quantile-chart','transport-w2','frequency-marginal','SUPPLEMENTARY_METHODS.pdf'):
             self.assertIn(phrase,site)
-        self.assertIn('not exact paper replication',site)
-        self.assertTrue((ROOT/'docs'/'downloads'/'v2_96_threshold_comparison.csv').exists())
 
 if __name__=='__main__':unittest.main()

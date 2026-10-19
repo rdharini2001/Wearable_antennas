@@ -1,0 +1,34 @@
+cff-version: 1.2.0
+message: "Please cite the GCITC paper when using this code or its research website."
+title: "WEAVE: Computational Companion for Wearable Textile Antenna Performance Prediction"
+type: software
+authors:
+  - family-names: Raghavan
+    given-names: Dharini
+  - family-names: Sujatha
+    given-names: B.
+  - family-names: Chinmayi
+    given-names: B. S.
+  - family-names: Rao
+    given-names: Bhavana B.
+  - family-names: Kiran
+    given-names: John
+repository-code: "https://github.com/rdharini2001/Wearable_antennas"
+preferred-citation:
+  type: conference-paper
+  authors:
+    - family-names: Raghavan
+      given-names: Dharini
+    - family-names: Sujatha
+      given-names: B.
+    - family-names: Chinmayi
+      given-names: B. S.
+    - family-names: Rao
+      given-names: Bhavana B.
+    - family-names: Kiran
+      given-names: John
+  title: "Ant Colony Optimization Based Support Vector Regression Algorithm for Performance Prediction of Wearable Textile Antennas"
+  conference:
+    name: "2023 Global Conference on Information Technologies and Communications (GCITC)"
+  year: 2023
+  doi: "10.1109/GCITC60406.2023.10425975"

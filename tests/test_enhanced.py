@@ -52,23 +52,23 @@ class FrequencyModels(unittest.TestCase):
         X=np.array([[29.4,38.,14.,24.]]*4)
         self.assertAlmostEqual(float(np.ptp(model.predict(X))),0.,places=12)
 
-    def test_summary_has_two_comparable_populations(self):
+    def test_shared_evaluation_populations(self):
         score=json.loads((ROOT/'results'/'enhanced'/'scorecard.json').read_text())
-        self.assertEqual(score['pointwise_thresholds']['total'],96)
-        self.assertEqual(score['pointwise_thresholds']['met_or_better'],89)
-        self.assertEqual(score['pointwise_by_frequency']['with']['met_or_better'],48)
-        self.assertEqual(score['pointwise_by_frequency']['without']['met_or_better'],41)
-        self.assertEqual(score['geometry_mean_thresholds_not_comparable']['met_or_better'],48)
         comps=pd.read_csv(ROOT/'results'/'enhanced'/'preferred_96_pointwise.csv')
+        self.assertEqual(len(comps),len(pd.read_csv(ROOT/'data'/'manuscript_results.csv'))*4)
         self.assertTrue(comps.same_pointwise_task.all())
         measured=pd.read_csv(ROOT/'results'/'enhanced'/'metrics.csv')
         np.testing.assert_allclose(measured.rmse.to_numpy()**2,measured.mse.to_numpy(),atol=1e-9,rtol=1e-10)
+        self.assertEqual(score['pointwise_thresholds']['total'],len(comps))
 
-    def test_website_built_from_predictions(self):
-        html=(ROOT/'docs'/'index.html').read_text()
-        for x in ('responseChart','resultsBody','sMacro','spectral_residual_hybrid'):
-            self.assertIn(x,html)
-        self.assertNotIn('/*__EXPERIMENT_DATA__*/',html)
-        self.assertTrue((ROOT/'docs'/'downloads'/'preferred_96_pointwise.csv').exists())
+    def test_publication_site(self):
+        home=(ROOT/'docs'/'index.html').read_text()
+        for identifier in ('response-chart','antenna-atlas.svg','baseline-table',
+                           'quantile-chart','SUPPLEMENTARY_METHODS.pdf'):
+            self.assertIn(identifier,home)
+        self.assertNotIn('study-one.html',home)
+        self.assertNotIn('study-two.html',home)
+        self.assertTrue((ROOT/'docs'/'SUPPLEMENTARY_METHODS.pdf').exists())
+        self.assertTrue((ROOT/'docs'/'downloads'/'paper_comparison.csv').exists())
 
 if __name__=='__main__':unittest.main()

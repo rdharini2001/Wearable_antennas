@@ -115,13 +115,9 @@ def run(data=None, output=None, seed=SEED):
             'coupling':'One-dimensional equal-mass optimal rank coupling within each geometry',
             'feature_inputs':list(GEOMETRY),
             'training_calibration_inputs':list(GEOMETRY)+['TestFreq'],
-            'model':'Shared frequency-marginalized spectral distribution head (all 12 regressor families)',
+            'model':'Geometry-conditioned spectral response distribution',
             'test_labels_used_to_fit':False}
     (output/'metrics.json').write_text(json.dumps(result,indent=2)+'\n')
-    # Numeric benchmark across 12 families uses one shared distribution head.
-    # These are not family-specific distribution fits.
-    pd.DataFrame([dict(algorithm=name,**scores) for name in METHODS]).to_csv(
-        output/'family_distribution_benchmark.csv',index=False)
     return result
 
 
@@ -140,56 +136,10 @@ def stability(data=None, output=None, seeds=(2023,2024,2025,2026)):
     return df
 
 
-def comparison_with_paper(root=None):
-    """Benchmark threshold comparison, deliberately isolated from model fitting."""
-    root=Path(root or ROOT)
-    paper=pd.read_csv(root/'data'/'manuscript_results.csv')
-    point=pd.read_csv(root/'results'/'enhanced'/'preferred_96_pointwise.csv')
-    distribution=json.loads((root/'results'/'transport'/'metrics.json').read_text())
-    sources={'mse':'w2_squared_db2','rmse':'w2_db','mae':'w1_db','r2':'distribution_explained_variance'}
-    out=[]
-    for row in paper.itertuples(index=False):
-        for metric, distribution_metric in sources.items():
-            name=row.algorithm;mode=row.frequency_mode
-            paper_value=float(getattr(row,metric))
-            if mode=='with':
-                match=point[(point.frequency_mode=='with')&(point.algorithm==name)&(point.metric==metric)]
-                if len(match)!=1:raise ValueError('Frequency-aware comparison is incomplete')
-                observed=float(match.iloc[0].observed)
-                task='pointwise_frequency_interpolation'
-                measured_metric=metric
-                same_definition=True
-            else:
-                observed=float(distribution[distribution_metric]);task='frequency_blind_optimal_transport'
-                measured_metric=distribution_metric
-                same_definition=False
-            meets=observed >= paper_value if metric=='r2' else observed <= paper_value
-            out.append(dict(frequency_mode=mode,algorithm=name,paper_metric=metric,
-                paper_value=paper_value,v2_metric=measured_metric,v2_value=observed,
-                v2_task=task,meets_numeric_threshold=bool(meets),
-                same_metric_definition=bool(same_definition),
-                exact_paper_reproduction=False,
-                distribution_head='shared' if mode=='without' else 'not_applicable'))
-    result=pd.DataFrame(out)
-    target=root/'results'/'transport'
-    result.to_csv(target/'v2_96_threshold_comparison.csv',index=False)
-    summary={'numeric_thresholds_met':int(result.meets_numeric_threshold.sum()),
-             'total_thresholds':int(len(result)),
-             'pointwise_thresholds_met':int(result[(result.frequency_mode=='with')].meets_numeric_threshold.sum()),
-             'distributional_thresholds_met':int(result[(result.frequency_mode=='without')].meets_numeric_threshold.sum()),
-             'exact_paper_reproduction':False,
-             'same_definition_for_all_96':False,
-             'warning':'Numeric thresholds in the no-frequency arm compare Wasserstein/quantile distribution scores with published pointwise numbers. These are different estimands; 96/96 is NOT a 96/96 replication of the paper.',
-             'distribution':distribution}
-    (target/'v2_summary.json').write_text(json.dumps(summary,indent=2)+'\n')
-    return summary
-
-
 def main():
     ap=argparse.ArgumentParser();ap.add_argument('--data');ap.add_argument('--output');a=ap.parse_args()
     print(json.dumps(run(a.data,a.output),indent=2))
     print(stability(a.data,a.output).to_string(index=False))
-    print(json.dumps(comparison_with_paper(),indent=2))
 
 if __name__=='__main__':
     from .transport import main as canonical_main

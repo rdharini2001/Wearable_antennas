@@ -1,0 +1,47 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 900 840" role="img" aria-labelledby="t d">
+<title id="t">Wearable antenna — spectral field atlas</title><desc id="d">Isometric copper textile patch on a deep green technical grid, encircled by luminous radio-frequency waves.</desc>
+<defs>
+ <radialGradient id="halo"><stop stop-color="#2acaa4" stop-opacity=".28"/><stop offset=".53" stop-color="#176d69" stop-opacity=".09"/><stop offset="1" stop-color="#081a1b" stop-opacity="0"/></radialGradient>
+ <linearGradient id="cu" x1="0" x2="1" y1="0" y2="1"><stop stop-color="#ffd8a8"/><stop offset=".42" stop-color="#d18f58"/><stop offset="1" stop-color="#87573e"/></linearGradient>
+ <linearGradient id="substrate" x1="0" x2="1" y1="0" y2="1"><stop stop-color="#3b8576"/><stop offset="1" stop-color="#103e3d"/></linearGradient>
+ <linearGradient id="trace" x1="0" x2="1"><stop stop-color="#75f6d9" stop-opacity="0"/><stop offset=".42" stop-color="#75f6d9"/><stop offset="1" stop-color="#75f6d9" stop-opacity="0"/></linearGradient>
+ <pattern id="cloth" width="12" height="12" patternUnits="userSpaceOnUse"><path d="M0 0V12 M6 0V12 M0 0H12 M0 6H12" stroke="#98c7a9" stroke-opacity=".12" stroke-width=".55"/></pattern>
+ <pattern id="cuMesh" width="15" height="15" patternUnits="userSpaceOnUse"><path d="M0 0L15 15M15 0L0 15" stroke="#ffe1af" stroke-opacity=".15" stroke-width=".6"/></pattern>
+ <filter id="glow" x="-70%" y="-70%" width="240%" height="240%"><feGaussianBlur stdDeviation="7" result="blur"/><feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge></filter>
+ <filter id="shadow" x="-70%" y="-70%" width="240%" height="240%"><feGaussianBlur stdDeviation="18"/></filter>
+ </defs>
+ <circle cx="453" cy="406" r="400" fill="url(#halo)"/>
+ <g stroke="#315c58" stroke-width=".8" opacity=".25">
+  <path d="M0 165H900M0 265H900M0 365H900M0 465H900M0 565H900M0 665H900M120 0V840M220 0V840M320 0V840M420 0V840M520 0V840M620 0V840M720 0V840M820 0V840" stroke-dasharray="2 9"/>
+ </g>
+ <g fill="none" stroke="#4ad9bd" stroke-width="1.2" opacity=".34" transform="translate(455 405)">
+  <circle r="314" stroke-dasharray="3 11"/><circle r="265" stroke-opacity=".52"/><circle r="215" stroke-dasharray="4 12"/><circle r="161" stroke-opacity=".37"/>
+  <path d="M-346 0H346M0-346V346" stroke-dasharray="3 13" opacity=".5"/>
+  <path d="M-232-225A316 316 0 0 1 226-221 M-208 239A314 314 0 0 1 -308 62" stroke="#dba779" stroke-width="2.1" opacity=".75"/>
+ </g>
+ <g opacity=".48" stroke="#65f1cb" fill="none"><path d="M134 267q55-81 127-110M654 143q74 58 109 140M740 556q-45 88-120 124" stroke-width="2.5" stroke-linecap="round"/><path d="M124 573q79 121 217 165" stroke="#e8a977" stroke-width="1.8"/></g>
+ <g stroke="#b9ffed" opacity=".77" fill="none"><circle cx="134" cy="267" r="5"/><circle cx="763" cy="283" r="4"/><circle cx="619" cy="680" r="4"/><circle cx="341" cy="738" r="3"/></g>
+ <g transform="translate(458 410)">
+  <ellipse rx="259" ry="113" cy="157" fill="#000" opacity=".35" filter="url(#shadow)"/>
+  <path d="M-234-44 9-159 258-34 6 92Z" fill="#092e2e" stroke="#4a9b8a" stroke-width="3" transform="translate(0 43)"/>
+  <path d="M-234-44 9-159 258-34 6 92 6 131-234-5Z" fill="#1d5b50" opacity=".89"/>
+  <path d="M6 92 258-34 258 7 6 131Z" fill="#082e31" stroke="#57a98a" stroke-width="1.7"/>
+  <path d="M-234-44 9-159 258-34 6 92Z" fill="url(#substrate)" stroke="#7cc4a8" stroke-width="2"/>
+  <path d="M-234-44 9-159 258-34 6 92Z" fill="url(#cloth)"/>
+  <path d="M-169-38 8-122 195-30 7 62Z" fill="url(#cu)" stroke="#ffdfad" stroke-width="2.2"/>
+  <path d="M-169-38 8-122 195-30 7 62Z" fill="url(#cuMesh)"/>
+  <path d="M-108-8-31-46 2-31-74 8Z" fill="#18433d" stroke="#ffe3a9" stroke-width="1.5" opacity=".9"/>
+  <path d="M61-55 111-78 142-63 90-38Z" fill="#18433d" stroke="#ffe3a9" stroke-width="1.5" opacity=".9"/>
+  <path d="M-74 8 2-31 M90-38 142-63" stroke="#8affd2" stroke-width="1.6" opacity=".72"/>
+  <path d="M7 62V104" stroke="#ffbf83" stroke-width="8"/><path d="M7 62V104" stroke="#ffe6b5" stroke-width="1.5"/>
+  <g fill="#e9fce6" opacity=".8"><circle cx="-169" cy="-38" r="2.2"/><circle cx="195" cy="-30" r="2.2"/><circle cx="8" cy="-122" r="2.2"/></g>
+ </g>
+ <g font-family="Arial,sans-serif" font-size="15" letter-spacing="2.2" fill="#b8e9de">
+  <text x="61" y="217">FREQUENCY</text><text x="61" y="242" fill="#e2b28a" font-size="23" letter-spacing="1">2.4 GHz</text>
+  <path d="M165 247 236 289" stroke="#8fceb3" stroke-width="1" opacity=".7"/>
+  <text x="689" y="540">TEXTILE</text><text x="689" y="561" fill="#e2b28a">SUBSTRATE</text><path d="M692 520 626 490" stroke="#8fceb3" stroke-width="1" opacity=".7"/>
+  <text x="61" y="669">S₁₁</text><text x="61" y="693" fill="#e2b28a" font-size="22" letter-spacing=".7">−20 dB</text><path d="M152 657 252 563" stroke="#8fceb3" stroke-width="1" opacity=".7"/>
+ </g>
+ <g stroke="url(#trace)" fill="none" stroke-width="2" opacity=".72" filter="url(#glow)"><path d="M126 441Q207 327 279 406T424 405T562 406T692 404T808 405"/></g>
+ <g fill="#75f6d9"><circle cx="808" cy="405" r="3"/><circle cx="126" cy="441" r="3"/></g>
+</svg>
