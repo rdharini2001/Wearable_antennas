@@ -2,7 +2,7 @@
 
 ### Ant colony optimization for wearable textile antenna performance prediction
 
-[**Research website**](docs/index.html) · [**Supplementary methods (PDF)**](docs/SUPPLEMENTARY_METHODS.pdf) · [**Source paper**](https://doi.org/10.1109/GCITC60406.2023.10425975) · [**Numerical results**](docs/RESULTS.md) · [**References**](docs/REFERENCES.md)
+[**Research website**](https://rdharini2001.github.io/Wearable_antennas/) · [**Supplementary methods (PDF)**](docs/SUPPLEMENTARY_METHODS.pdf) · [**Source paper**](https://doi.org/10.1109/GCITC60406.2023.10425975) · [**Numerical results**](docs/RESULTS.md) · [**References**](docs/REFERENCES.md)
 
 ![WEAVE — textile patch antenna and frequency-field visualization](docs/assets/antenna-atlas.svg)
 
