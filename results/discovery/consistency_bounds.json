@@ -1,0 +1,19 @@
+{
+  "printed_metrics": 96,
+  "unrestricted_rowwise_upper_bound": 83,
+  "per_arm_shared_test_set_upper_bound": 74,
+  "same_test_set_for_both_arms_upper_bound": 69,
+  "arm_results": {
+    "with": {
+      "upper_bound": 39,
+      "n_printed_metrics": 48,
+      "variance_at_upper_bound": 8.812865497076023
+    },
+    "without": {
+      "upper_bound": 35,
+      "n_printed_metrics": 48,
+      "variance_at_upper_bound": 9.725146198830409
+    }
+  },
+  "interpretation": "Necessary algebraic constraints, rounded to two decimals. Upper bounds only; no endpoint-conditioned model fitting."
+}

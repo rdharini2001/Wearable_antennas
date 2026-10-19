@@ -1,0 +1,12 @@
+{
+  "protocol": "frequency_interpolation",
+  "frequency_mode": "with",
+  "samples": 200,
+  "warmups": 40,
+  "median_ms": 0.11463,
+  "p95_ms": 0.26590024999999984,
+  "cpu": "x86_64",
+  "platform": "Linux",
+  "python": "3.13.5",
+  "quantity": "single-sample prediction, preprocessing included"
+}

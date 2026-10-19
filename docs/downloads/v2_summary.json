@@ -1,0 +1,44 @@
+{
+  "numeric_thresholds_met": 96,
+  "total_thresholds": 96,
+  "pointwise_thresholds_met": 48,
+  "distributional_thresholds_met": 48,
+  "exact_paper_reproduction": false,
+  "same_definition_for_all_96": false,
+  "warning": "Numeric thresholds in the no-frequency arm compare Wasserstein/quantile distribution scores with published pointwise numbers. These are different estimands; 96/96 is NOT a 96/96 replication of the paper.",
+  "distribution": {
+    "w2_squared_db2": 0.7240380590881028,
+    "w2_db": 0.8509042596485829,
+    "w1_db": 0.28605585580179566,
+    "distribution_explained_variance": 0.9212958899986108,
+    "quantile_pairs": 317,
+    "designs": 8,
+    "selected_spectral_method": "cubic",
+    "training_selection_scores": {
+      "cubic": 0.14152298121499446,
+      "pchip": 0.1737246734494251,
+      "akima": 0.15576193940311242,
+      "linear": 0.21403717851509504
+    },
+    "training_rows": 949,
+    "heldout_rows": 317,
+    "seed": 2023,
+    "task": "Unordered held-out response distributions conditional on geometry",
+    "coupling": "One-dimensional equal-mass optimal rank coupling within each geometry",
+    "feature_inputs": [
+      "PatchLength",
+      "PatchWidth",
+      "SlotLength",
+      "SlotWidth"
+    ],
+    "training_calibration_inputs": [
+      "PatchLength",
+      "PatchWidth",
+      "SlotLength",
+      "SlotWidth",
+      "TestFreq"
+    ],
+    "model": "Shared frequency-marginalized spectral distribution head (all 12 regressor families)",
+    "test_labels_used_to_fit": false
+  }
+}

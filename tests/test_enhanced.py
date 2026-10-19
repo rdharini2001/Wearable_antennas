@@ -1,0 +1,74 @@
+"""Regression checks for independent spectral reconstruction and scoring."""
+import json
+import tempfile
+import unittest
+from pathlib import Path
+import numpy as np
+import pandas as pd
+import joblib
+from src.discovery import ROOT,observations,geometry_groups,metrics
+from src.enhanced import curve_predict,tune_curve,WearablePredictor
+from src.scorecard import report
+
+class FrequencyModels(unittest.TestCase):
+    def test_local_interpolation_not_test_targets(self):
+        f=[1.,1.5,2.,2.5,3.,3.5];y=[1,0,-1,0,1,0]
+        o=curve_predict(f,y,[1.75,2.75],'cubic')
+        self.assertEqual(len(o),2);self.assertTrue(np.all(np.isfinite(o)))
+        self.assertAlmostEqual(curve_predict(f,y,[1.5],'cubic')[0],0,places=12)
+
+    def test_training_only_curve_selection(self):
+        df=observations();group=geometry_groups(df)
+        from src.discovery import _split_indices
+        tr,te=_split_indices(df,group,'frequency_interpolation',2023)
+        method,cv=tune_curve(df,group,tr,2023)
+        self.assertIn(method,('cubic','pchip','akima','linear'))
+        self.assertEqual(len(cv),4)
+        self.assertTrue(np.isfinite(list(cv.values())).all())
+
+    def test_saved_model_replays_test_predictions(self):
+        df=observations();groups=geometry_groups(df)
+        stored=pd.read_csv(ROOT/'results'/'enhanced'/'predictions.csv')
+        tests=[('frequency_interpolation','with','ACO-SVM','spectral_residual_hybrid'),
+               ('frequency_interpolation','with','Decision Tree Regressor','spectral_residual_hybrid'),
+               ('frequency_interpolation','without','Support Vector Regression','geometry_pooled_blind'),
+               ('geometry_holdout','with','Linear Regression','paper_family_baseline')]
+        for protocol,mode,name,variant in tests:
+            with self.subTest(protocol=protocol,mode=mode,name=name):
+                slug=name.lower().replace(' ','_').replace('-','_')
+                path=ROOT/'results'/'enhanced'/f'{protocol}__{mode}__{slug}.joblib'
+                obj=joblib.load(path)
+                self.assertIsInstance(obj,WearablePredictor)
+                data=stored[(stored.protocol==protocol)&(stored.frequency_mode==mode)&
+                            (stored.algorithm==name)&(stored.variant==variant)].sort_values('row')
+                ix=data.row.to_numpy(int)
+                features=['TestFreq','PatchLength','PatchWidth','SlotLength','SlotWidth'] if mode=='with' else ['PatchLength','PatchWidth','SlotLength','SlotWidth']
+                result=obj.predict(df.loc[ix,features].to_numpy(float))
+                np.testing.assert_allclose(result,data.predicted_db.to_numpy(float),atol=1e-10,rtol=1e-10)
+
+    def test_no_frequency_variation(self):
+        path=ROOT/'results'/'enhanced'/'frequency_interpolation__without__aco_svm.joblib'
+        model=joblib.load(path)
+        X=np.array([[29.4,38.,14.,24.]]*4)
+        self.assertAlmostEqual(float(np.ptp(model.predict(X))),0.,places=12)
+
+    def test_summary_has_two_comparable_populations(self):
+        score=json.loads((ROOT/'results'/'enhanced'/'scorecard.json').read_text())
+        self.assertEqual(score['pointwise_thresholds']['total'],96)
+        self.assertEqual(score['pointwise_thresholds']['met_or_better'],89)
+        self.assertEqual(score['pointwise_by_frequency']['with']['met_or_better'],48)
+        self.assertEqual(score['pointwise_by_frequency']['without']['met_or_better'],41)
+        self.assertEqual(score['geometry_mean_thresholds_not_comparable']['met_or_better'],48)
+        comps=pd.read_csv(ROOT/'results'/'enhanced'/'preferred_96_pointwise.csv')
+        self.assertTrue(comps.same_pointwise_task.all())
+        measured=pd.read_csv(ROOT/'results'/'enhanced'/'metrics.csv')
+        np.testing.assert_allclose(measured.rmse.to_numpy()**2,measured.mse.to_numpy(),atol=1e-9,rtol=1e-10)
+
+    def test_website_built_from_predictions(self):
+        html=(ROOT/'docs'/'index.html').read_text()
+        for x in ('responseChart','resultsBody','sMacro','spectral_residual_hybrid'):
+            self.assertIn(x,html)
+        self.assertNotIn('/*__EXPERIMENT_DATA__*/',html)
+        self.assertTrue((ROOT/'docs'/'downloads'/'preferred_96_pointwise.csv').exists())
+
+if __name__=='__main__':unittest.main()

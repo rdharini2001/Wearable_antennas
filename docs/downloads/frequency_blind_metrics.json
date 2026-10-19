@@ -1,0 +1,75 @@
+{
+  "pointwise_mean": {
+    "mse": 6.313184725698941,
+    "rmse": 2.5126051670923033,
+    "mae": 1.0846839840697455,
+    "r2": 0.31374659263590066
+  },
+  "pointwise_median": {
+    "mse": 7.200250482070139,
+    "rmse": 2.68332824717181,
+    "mae": 0.9213064936908518,
+    "r2": 0.21732110782667058
+  },
+  "probabilistic": {
+    "crps_db": 0.7355083065923484,
+    "interval_coverage": 0.9305993690851735,
+    "mean_interval_width_db": 4.575204828233439,
+    "nominal_coverage": 0.9,
+    "crps_improvement_over_median_point_db": 0.18579818709850338
+  },
+  "test_oracle_floor": {
+    "mse_minimum": 6.156506541987357,
+    "rmse_minimum": 2.481230852215762,
+    "r2_maximum": 0.3307777650319831,
+    "mae_minimum": 0.8889568044164038,
+    "basis": "Evaluation-partition oracle constants; not available during training"
+  },
+  "calibration": {
+    "training_distribution_rows": 759,
+    "calibration_rows": 190,
+    "conditional_designs": 8,
+    "nominal_coverage": 0.9,
+    "interval_expansion_db": 0.007513999999999965
+  },
+  "test_rows": 317,
+  "seed": 2023,
+  "geometry_transfer": {
+    "pointwise": {
+      "mse": 2.5301676448906045,
+      "rmse": 1.590650069905573,
+      "mae": 0.7647717018945055,
+      "r2": 0.18358247527847604
+    },
+    "probabilistic": {
+      "crps_db": 0.5557775443033169,
+      "interval_coverage": 0.9523809523809523,
+      "mean_interval_width_db": 2.9285528822216396
+    },
+    "n_test_rows": 231,
+    "n_unseen_geometries": 2,
+    "calibration": {
+      "training_distribution_rows": 828,
+      "calibration_rows": 207,
+      "conditional_designs": 6,
+      "nominal_coverage": 0.9,
+      "interval_expansion_db": 0.0020140000000000713
+    }
+  },
+  "robustness": {
+    "seeds": [
+      41,
+      101,
+      2023,
+      3907
+    ],
+    "crps_range_db": [
+      0.7111857516902628,
+      0.8691871820903424
+    ],
+    "interval_coverage_range": [
+      0.8706624605678234,
+      0.9305993690851735
+    ]
+  }
+}

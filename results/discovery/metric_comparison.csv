@@ -1,0 +1,193 @@
+protocol,frequency_mode,algorithm,metric,published,observed,absolute_difference,matches_printed_precision,mse_rmse_pair_compatible
+geometry_holdout,with,ACO-SVM,mse,5.33,3.615234766982988,1.7147652330170122,False,False
+geometry_holdout,with,ACO-SVM,rmse,1.02,1.901377071225744,0.881377071225744,False,False
+geometry_holdout,with,ACO-SVM,mae,0.22,0.7383393205899257,0.5183393205899257,False,False
+geometry_holdout,with,ACO-SVM,r2,0.13,-0.166539705662492,0.296539705662492,False,False
+frequency_interpolation,with,ACO-SVM,mse,5.33,0.7605123325948898,4.56948766740511,False,False
+frequency_interpolation,with,ACO-SVM,rmse,1.02,0.8720735820989476,0.14792641790105243,False,False
+frequency_interpolation,with,ACO-SVM,mae,0.22,0.1457185988422078,0.07428140115779219,False,False
+frequency_interpolation,with,ACO-SVM,r2,0.13,0.9173310773782432,0.7873310773782431,False,False
+geometry_holdout,with,Bayesian Regression,mse,7.53,3.6101574965239305,3.9198425034760698,False,True
+geometry_holdout,with,Bayesian Regression,rmse,2.74,1.9000414460016208,0.8399585539983794,False,True
+geometry_holdout,with,Bayesian Regression,mae,1.24,0.8405378941155611,0.39946210588443887,False,True
+geometry_holdout,with,Bayesian Regression,r2,0.14,-0.1649014060862184,0.3049014060862184,False,True
+frequency_interpolation,with,Bayesian Regression,mse,7.53,6.59927999241336,0.9307200075866406,False,True
+frequency_interpolation,with,Bayesian Regression,rmse,2.74,2.568906380624518,0.1710936193754824,False,True
+frequency_interpolation,with,Bayesian Regression,mae,1.24,1.1238513478117378,0.1161486521882622,False,True
+frequency_interpolation,with,Bayesian Regression,r2,0.14,0.2826475736551478,0.1426475736551478,False,True
+geometry_holdout,with,Decision Tree Regressor,mse,7.53,6.447260876476118,1.082739123523882,False,False
+geometry_holdout,with,Decision Tree Regressor,rmse,0.71,2.5391456981583627,1.8291456981583627,False,False
+geometry_holdout,with,Decision Tree Regressor,mae,0.18,1.022137979076479,0.8421379790764791,False,False
+geometry_holdout,with,Decision Tree Regressor,r2,0.94,-1.0803588950463148,2.0203588950463147,False,False
+frequency_interpolation,with,Decision Tree Regressor,mse,7.53,0.8302475241502468,6.6997524758497535,False,False
+frequency_interpolation,with,Decision Tree Regressor,rmse,0.71,0.9111791943137456,0.20117919431374565,False,False
+frequency_interpolation,with,Decision Tree Regressor,mae,0.18,0.2462909037854889,0.06629090378548891,False,False
+frequency_interpolation,with,Decision Tree Regressor,r2,0.94,0.9097507490816158,0.030249250918384152,False,False
+geometry_holdout,with,ElasticNet Regression,mse,7.51,4.830039652055044,2.679960347944956,False,True
+geometry_holdout,with,ElasticNet Regression,rmse,2.74,2.1977351187199616,0.5422648812800386,False,True
+geometry_holdout,with,ElasticNet Regression,mae,1.27,1.3938299028562433,0.12382990285624329,False,True
+geometry_holdout,with,ElasticNet Regression,r2,0.15,-0.5585247977542946,0.7085247977542947,False,True
+frequency_interpolation,with,ElasticNet Regression,mse,7.51,6.96948402197092,0.54051597802908,False,True
+frequency_interpolation,with,ElasticNet Regression,rmse,2.74,2.6399780343728088,0.10002196562719146,False,True
+frequency_interpolation,with,ElasticNet Regression,mae,1.27,1.2104303735587567,0.059569626441243306,False,True
+frequency_interpolation,with,ElasticNet Regression,r2,0.15,0.242405795892868,0.09240579589286801,False,True
+geometry_holdout,with,Lasso Regression,mse,7.53,4.52043976458684,3.0095602354131605,False,True
+geometry_holdout,with,Lasso Regression,rmse,2.74,2.1261325839624488,0.6138674160375515,False,True
+geometry_holdout,with,Lasso Regression,mae,1.26,1.2925592994225463,0.03255929942254632,False,True
+geometry_holdout,with,Lasso Regression,r2,0.15,-0.4586251826867793,0.6086251826867793,False,True
+frequency_interpolation,with,Lasso Regression,mse,7.53,6.742483651591962,0.7875163484080385,False,True
+frequency_interpolation,with,Lasso Regression,rmse,2.74,2.5966292865158787,0.14337071348412156,False,True
+frequency_interpolation,with,Lasso Regression,mae,1.26,1.1640369962914423,0.0959630037085577,False,True
+frequency_interpolation,with,Lasso Regression,r2,0.15,0.2670811039052161,0.11708110390521612,False,True
+geometry_holdout,with,Linear Regression,mse,7.54,3.537673760000287,4.002326239999713,False,True
+geometry_holdout,with,Linear Regression,rmse,2.74,1.880870479326072,0.8591295206739282,False,True
+geometry_holdout,with,Linear Regression,mae,1.26,0.8064287485139021,0.4535712514860979,False,True
+geometry_holdout,with,Linear Regression,r2,0.15,-0.1415128401646275,0.29151284016462753,False,True
+frequency_interpolation,with,Linear Regression,mse,7.54,6.600231316723565,0.9397686832764354,False,True
+frequency_interpolation,with,Linear Regression,rmse,2.74,2.5690915352948336,0.17090846470516663,False,True
+frequency_interpolation,with,Linear Regression,mae,1.26,1.1267977187123173,0.13320228128768274,False,True
+frequency_interpolation,with,Linear Regression,r2,0.15,0.2825441631614347,0.13254416316143472,False,True
+geometry_holdout,with,Partial Least Squares,mse,8.52,5.684940495460263,2.8350595045397364,False,False
+geometry_holdout,with,Partial Least Squares,rmse,2.91,2.3843113251964945,0.5256886748035057,False,False
+geometry_holdout,with,Partial Least Squares,mae,1.48,1.6942767949324091,0.21427679493240914,False,False
+geometry_holdout,with,Partial Least Squares,r2,0.03,-0.8343784677135473,0.8643784677135473,False,False
+frequency_interpolation,with,Partial Least Squares,mse,8.52,7.670042386082505,0.8499576139174945,False,False
+frequency_interpolation,with,Partial Least Squares,rmse,2.91,2.769484137178349,0.14051586282165118,False,False
+frequency_interpolation,with,Partial Least Squares,mae,1.48,1.4058431763571302,0.0741568236428698,False,False
+frequency_interpolation,with,Partial Least Squares,r2,0.03,0.1662539667737274,0.1362539667737274,False,False
+geometry_holdout,with,Polynomial Regression,mse,7.33,2.346392575609285,4.983607424390716,False,False
+geometry_holdout,with,Polynomial Regression,rmse,1.22,1.5317939076812144,0.3117939076812144,False,False
+geometry_holdout,with,Polynomial Regression,mae,2.7,1.0748205341421502,1.62517946585785,False,False
+geometry_holdout,with,Polynomial Regression,r2,0.17,0.2428817819750758,0.07288178197507578,False,False
+frequency_interpolation,with,Polynomial Regression,mse,7.33,5.979932450031977,1.3500675499680233,False,False
+frequency_interpolation,with,Polynomial Regression,rmse,1.22,2.445390040470431,1.2253900404704312,False,False
+frequency_interpolation,with,Polynomial Regression,mae,2.7,1.2169665147667654,1.4830334852332347,False,False
+frequency_interpolation,with,Polynomial Regression,r2,0.17,0.3499716548865502,0.17997165488655018,False,False
+geometry_holdout,with,Principal Component Regression,mse,7.9,5.414194663148049,2.4858053368519517,False,True
+geometry_holdout,with,Principal Component Regression,rmse,2.81,2.3268422084765543,0.48315779152344573,False,True
+geometry_holdout,with,Principal Component Regression,mae,1.35,1.661496528556625,0.3114965285566249,False,True
+geometry_holdout,with,Principal Component Regression,r2,0.1,-0.747016018552767,0.847016018552767,False,True
+frequency_interpolation,with,Principal Component Regression,mse,7.9,7.843807258215958,0.05619274178404243,False,True
+frequency_interpolation,with,Principal Component Regression,rmse,2.81,2.800679785019337,0.009320214980663266,False,True
+frequency_interpolation,with,Principal Component Regression,mae,1.35,1.4151337390945364,0.06513373909453635,False,True
+frequency_interpolation,with,Principal Component Regression,r2,0.1,0.1473654436648828,0.047365443664882795,False,True
+geometry_holdout,with,Random Forest Regressor,mse,7.83,3.252946485311764,4.577053514688236,False,False
+geometry_holdout,with,Random Forest Regressor,rmse,2.72,1.803592660583804,0.9164073394161962,False,False
+geometry_holdout,with,Random Forest Regressor,mae,1.32,0.7826630278542739,0.5373369721457262,False,False
+geometry_holdout,with,Random Forest Regressor,r2,0.17,-0.0496389529574581,0.2196389529574581,False,False
+frequency_interpolation,with,Random Forest Regressor,mse,7.83,0.8333479661061722,6.996652033893827,False,False
+frequency_interpolation,with,Random Forest Regressor,rmse,2.72,0.9128789438398568,1.8071210561601434,False,False
+frequency_interpolation,with,Random Forest Regressor,mae,1.32,0.2743105837599826,1.0456894162400174,False,False
+frequency_interpolation,with,Random Forest Regressor,r2,0.17,0.909413726018133,0.7394137260181329,False,False
+geometry_holdout,with,Ridge Regression,mse,7.54,3.671557871724764,3.868442128275236,False,True
+geometry_holdout,with,Ridge Regression,rmse,2.74,1.9161309641370456,0.8238690358629546,False,True
+geometry_holdout,with,Ridge Regression,mae,1.26,0.8721976563736701,0.3878023436263299,False,True
+geometry_holdout,with,Ridge Regression,r2,0.15,-0.1847136673170764,0.3347136673170764,False,True
+frequency_interpolation,with,Ridge Regression,mse,7.54,6.602279612411586,0.9377203875884144,False,True
+frequency_interpolation,with,Ridge Regression,rmse,2.74,2.5694901463931683,0.1705098536068319,False,True
+frequency_interpolation,with,Ridge Regression,mae,1.26,1.1238810992568495,0.13611890074315047,False,True
+frequency_interpolation,with,Ridge Regression,r2,0.15,0.2823215101018035,0.1323215101018035,False,True
+geometry_holdout,with,Support Vector Regression,mse,6.97,2.3406338059996843,4.6293661940003155,False,False
+geometry_holdout,with,Support Vector Regression,rmse,1.15,1.529913006023442,0.37991300602344213,False,False
+geometry_holdout,with,Support Vector Regression,mae,1.41,0.6020715073407538,0.8079284926592462,False,False
+geometry_holdout,with,Support Vector Regression,r2,0.48,0.2447399831261363,0.2352600168738637,False,False
+frequency_interpolation,with,Support Vector Regression,mse,6.97,6.65686540429813,0.31313459570186986,False,False
+frequency_interpolation,with,Support Vector Regression,rmse,1.15,2.5800901930549114,1.4300901930549115,False,False
+frequency_interpolation,with,Support Vector Regression,mae,1.41,0.7660960398746856,0.6439039601253144,False,False
+frequency_interpolation,with,Support Vector Regression,r2,0.48,0.2763879460919746,0.2036120539080254,False,False
+geometry_holdout,without,ACO-SVM,mse,5.97,3.3939610231635555,2.5760389768364442,False,False
+geometry_holdout,without,ACO-SVM,rmse,1.38,1.8422706161591884,0.4622706161591885,False,False
+geometry_holdout,without,ACO-SVM,mae,0.72,0.7674741340745522,0.047474134074552254,False,False
+geometry_holdout,without,ACO-SVM,r2,0.44,-0.0951405781858079,0.5351405781858078,False,False
+frequency_interpolation,without,ACO-SVM,mse,5.97,7.162820226549443,1.1928202265494434,False,False
+frequency_interpolation,without,ACO-SVM,rmse,1.38,2.6763445642423256,1.2963445642423257,False,False
+frequency_interpolation,without,ACO-SVM,mae,0.72,0.9197541095475176,0.1997541095475176,False,False
+frequency_interpolation,without,ACO-SVM,r2,0.44,0.2213898372406895,0.2186101627593105,False,False
+geometry_holdout,without,Bayesian Regression,mse,8.47,3.45077447751256,5.0192255224874405,False,False
+geometry_holdout,without,Bayesian Regression,rmse,1.74,1.8576260327397869,0.11762603273978689,False,False
+geometry_holdout,without,Bayesian Regression,mae,1.1,0.8830192103907402,0.21698078960925993,False,False
+geometry_holdout,without,Bayesian Regression,r2,0.14,-0.1134727625626654,0.25347276256266543,False,False
+frequency_interpolation,without,Bayesian Regression,mse,8.47,6.6870619778603,1.7829380221397004,False,False
+frequency_interpolation,without,Bayesian Regression,rmse,1.74,2.585935416413237,0.8459354164132369,False,False
+frequency_interpolation,without,Bayesian Regression,mae,1.1,1.162209048454771,0.06220904845477082,False,False
+frequency_interpolation,without,Bayesian Regression,r2,0.14,0.2731055296257804,0.13310552962578037,False,False
+geometry_holdout,without,Decision Tree Regressor,mse,8.3,5.5430325164091325,2.756967483590868,False,True
+geometry_holdout,without,Decision Tree Regressor,rmse,2.88,2.3543645674383424,0.5256354325616575,False,True
+geometry_holdout,without,Decision Tree Regressor,mae,3.14,1.1113356386250566,2.0286643613749433,False,True
+geometry_holdout,without,Decision Tree Regressor,r2,0.18,-0.7885885528716923,0.9685885528716922,False,True
+frequency_interpolation,without,Decision Tree Regressor,mse,8.3,6.26332094442057,2.0366790555794303,False,True
+frequency_interpolation,without,Decision Tree Regressor,rmse,2.88,2.502662770814432,0.3773372291855681,False,True
+frequency_interpolation,without,Decision Tree Regressor,mae,3.14,1.077968804156631,2.0620311958433692,False,True
+frequency_interpolation,without,Decision Tree Regressor,r2,0.18,0.3191668664427235,0.13916686644272352,False,True
+geometry_holdout,without,ElasticNet Regression,mse,8.36,4.669447454864173,3.6905525451358265,False,True
+geometry_holdout,without,ElasticNet Regression,rmse,2.89,2.160890431017772,0.7291095689822282,False,True
+geometry_holdout,without,ElasticNet Regression,mae,1.17,1.4188158764228884,0.2488158764228885,False,True
+geometry_holdout,without,ElasticNet Regression,r2,0.14,-0.5067059847262627,0.6467059847262627,False,True
+frequency_interpolation,without,ElasticNet Regression,mse,8.36,7.017555177013028,1.3424448229869714,False,True
+frequency_interpolation,without,ElasticNet Regression,rmse,2.89,2.64906685023482,0.24093314976518032,False,True
+frequency_interpolation,without,ElasticNet Regression,mae,1.17,1.231282854983946,0.061282854983946145,False,True
+frequency_interpolation,without,ElasticNet Regression,r2,0.14,0.2371803834620727,0.0971803834620727,False,True
+geometry_holdout,without,Lasso Regression,mse,8.5,4.382335143252019,4.117664856747981,False,False
+geometry_holdout,without,Lasso Regression,rmse,2.74,2.093402766610386,0.6465972333896142,False,False
+geometry_holdout,without,Lasso Regression,mae,1.13,1.3221722562691147,0.19217225626911483,False,False
+geometry_holdout,without,Lasso Regression,r2,0.03,-0.4140625098020531,0.4440625098020531,False,False
+frequency_interpolation,without,Lasso Regression,mse,8.5,6.805409388002861,1.694590611997139,False,False
+frequency_interpolation,without,Lasso Regression,rmse,2.74,2.6087179586921354,0.1312820413078648,False,False
+frequency_interpolation,without,Lasso Regression,mae,1.13,1.1918642190703477,0.06186421907034778,False,False
+frequency_interpolation,without,Lasso Regression,r2,0.03,0.2602409744144551,0.2302409744144551,False,False
+geometry_holdout,without,Linear Regression,mse,8.94,3.394521171052045,5.545478828947955,False,True
+geometry_holdout,without,Linear Regression,rmse,2.99,1.8424226363817957,1.1475773636182045,False,True
+geometry_holdout,without,Linear Regression,mae,1.34,0.8491331570565487,0.4908668429434514,False,True
+geometry_holdout,without,Linear Regression,r2,0.08,-0.0953213229493108,0.1753213229493108,False,True
+frequency_interpolation,without,Linear Regression,mse,8.94,6.690149772350667,2.2498502276493326,False,True
+frequency_interpolation,without,Linear Regression,rmse,2.99,2.5865323837815497,0.4034676162184505,False,True
+frequency_interpolation,without,Linear Regression,mae,1.34,1.1627135526492731,0.17728644735072696,False,True
+frequency_interpolation,without,Linear Regression,r2,0.08,0.2727698813622933,0.19276988136229328,False,True
+geometry_holdout,without,Partial Least Squares,mse,12.38,5.41257052648584,6.96742947351416,False,False
+geometry_holdout,without,Partial Least Squares,rmse,3.51,2.326493182127521,1.1835068178724786,False,False
+geometry_holdout,without,Partial Least Squares,mae,1.67,1.7255201506866005,0.055520150686600545,False,False
+geometry_holdout,without,Partial Least Squares,r2,-0.26,-0.7464919530283944,0.48649195302839443,False,False
+frequency_interpolation,without,Partial Least Squares,mse,12.38,7.735729191749058,4.644270808250943,False,False
+frequency_interpolation,without,Partial Least Squares,rmse,3.51,2.7813178875757907,0.7286821124242091,False,False
+frequency_interpolation,without,Partial Least Squares,mae,1.67,1.4508089072568486,0.2191910927431513,False,False
+frequency_interpolation,without,Partial Least Squares,r2,-0.26,0.159113704581804,0.41911370458180397,False,False
+geometry_holdout,without,Polynomial Regression,mse,8.02,1.811691337714142,6.208308662285858,False,False
+geometry_holdout,without,Polynomial Regression,rmse,2.65,1.3459908386442094,1.3040091613557905,False,False
+geometry_holdout,without,Polynomial Regression,mae,2.7,0.7478895945051197,1.9521104054948806,False,False
+geometry_holdout,without,Polynomial Regression,r2,0.17,0.4154155909459678,0.2454155909459678,False,False
+frequency_interpolation,without,Polynomial Regression,mse,8.02,6.25100375542575,1.7689962445742493,False,False
+frequency_interpolation,without,Polynomial Regression,rmse,2.65,2.500200743025597,0.14979925697440288,False,False
+frequency_interpolation,without,Polynomial Regression,mae,2.7,1.0720887836494577,1.6279112163505425,False,False
+frequency_interpolation,without,Polynomial Regression,r2,0.17,0.3205057648409336,0.15050576484093361,False,False
+geometry_holdout,without,Principal Component Regression,mse,9.95,5.356293697229959,4.59370630277004,False,True
+geometry_holdout,without,Principal Component Regression,rmse,3.15,2.314366802654661,0.8356331973453388,False,True
+geometry_holdout,without,Principal Component Regression,mae,1.5,1.6517557778606542,0.1517557778606542,False,True
+geometry_holdout,without,Principal Component Regression,r2,-0.01,-0.7283329232372089,0.7183329232372089,False,True
+frequency_interpolation,without,Principal Component Regression,mse,9.95,7.875956243162604,2.074043756837395,False,True
+frequency_interpolation,without,Principal Component Regression,rmse,3.15,2.806413412732095,0.3435865872679047,False,True
+frequency_interpolation,without,Principal Component Regression,mae,1.5,1.442268149482148,0.0577318505178519,False,True
+frequency_interpolation,without,Principal Component Regression,r2,-0.01,0.1438707969181901,0.1538707969181901,False,True
+geometry_holdout,without,Random Forest Regressor,mse,8.32,1.7998486022918772,6.520151397708123,False,True
+geometry_holdout,without,Random Forest Regressor,rmse,2.88,1.3415843627189,1.5384156372811,False,True
+geometry_holdout,without,Random Forest Regressor,mae,1.14,0.7512807193762746,0.3887192806237253,False,True
+geometry_holdout,without,Random Forest Regressor,r2,0.15,0.4192369253776614,0.2692369253776614,False,True
+frequency_interpolation,without,Random Forest Regressor,mse,8.32,6.270972596328323,2.049027403671677,False,True
+frequency_interpolation,without,Random Forest Regressor,rmse,2.88,2.5041910063588046,0.37580899364119524,False,True
+frequency_interpolation,without,Random Forest Regressor,mae,1.14,1.0814500675638024,0.05854993243619755,False,True
+frequency_interpolation,without,Random Forest Regressor,r2,0.15,0.3183351194842851,0.16833511948428512,False,True
+geometry_holdout,without,Ridge Regression,mse,8.53,3.523512368197807,5.006487631802193,False,True
+geometry_holdout,without,Ridge Regression,rmse,2.92,1.877102119810696,1.0428978801893038,False,True
+geometry_holdout,without,Ridge Regression,mae,1.23,0.9241490186202084,0.3058509813797916,False,True
+geometry_holdout,without,Ridge Regression,r2,0.12,-0.1369433372444002,0.2569433372444002,False,True
+frequency_interpolation,without,Ridge Regression,mse,8.53,6.686066086950067,1.8439339130499324,False,True
+frequency_interpolation,without,Ridge Regression,rmse,2.92,2.585742850120651,0.33425714987934896,False,True
+frequency_interpolation,without,Ridge Regression,mae,1.23,1.1631959143520467,0.06680408564795326,False,True
+frequency_interpolation,without,Ridge Regression,r2,0.12,0.2732137845811168,0.15321378458111679,False,True
+geometry_holdout,without,Support Vector Regression,mse,7.14,2.1879333713152294,4.95206662868477,False,False
+geometry_holdout,without,Support Vector Regression,rmse,2.01,1.4791664447638166,0.5308335552361831,False,False
+geometry_holdout,without,Support Vector Regression,mae,1.18,0.6048960194857901,0.5751039805142099,False,False
+geometry_holdout,without,Support Vector Regression,r2,0.52,0.2940123351620717,0.22598766483792831,False,False
+frequency_interpolation,without,Support Vector Regression,mse,7.14,7.163279210464407,0.023279210464407285,False,False
+frequency_interpolation,without,Support Vector Regression,rmse,2.01,2.6764303111540952,0.6664303111540955,False,False
+frequency_interpolation,without,Support Vector Regression,mae,1.18,0.917406396472246,0.26259360352775396,False,False
+frequency_interpolation,without,Support Vector Regression,r2,0.52,0.2213399449455556,0.29866005505444443,False,False

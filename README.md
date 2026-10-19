@@ -1,90 +1,69 @@
-<<<<<<< HEAD
-# WEAVE
+# WEAVE V2 — Textile antenna response modeling
 
-### Ant colony optimization · Support vector regression · Wearable textile antennas
+**Research companion to the initial 2023 GCITC study**
 
-[**Explore the interactive antenna atlas**](docs/index.html) &nbsp;·&nbsp; [**Research article**](https://doi.org/10.1109/GCITC60406.2023.10425975) &nbsp;·&nbsp; [**Methods**](docs/METHODS.md) &nbsp;·&nbsp; [**Results**](docs/RESULTS.md) &nbsp;·&nbsp; [**References**](docs/REFERENCES.md)
+[Research website](docs/index.html) · [Methods](docs/METHODS.md) · [Results](docs/RESULTS.md) · [References](docs/REFERENCES.md) · [Original paper](https://doi.org/10.1109/GCITC60406.2023.10425975)
 
-**WEAVE** is a computational companion to *Ant Colony Optimization Based Support Vector Regression Algorithm for Performance Prediction of Wearable Textile Antennas* (IEEE GCITC, 2023). It implements the manuscript's 12 regression families under two feature configurations, a 21-ant optimization study, Gaussian-kernel refinement, a numerical scoring framework, and a static interactive atlas of patch-antenna design and performance.
-=======
+WEAVE V2 extends *Ant Colony Optimization Based Support Vector Regression Algorithm for Performance Prediction of Wearable Textile Antennas* with independent SVR hyperparameter search, spectral-response interpolation, and geometry-conditional response distributions. The original study is treated as the initial benchmark. Models are trained on the 1,266 measured antenna-response records with no use of reported benchmark values for fitting, calibration, or model selection.
 
-![WEAVE RF-textile research atlas](docs/media/weave-overview.png)
+## V2 results
 
-The complete workflow operates on the **1,266 numerical antenna records** in `data/comm_antenna.csv`, covering eight distinct patch/slot geometries, operating frequencies from 1 to 3.5 GHz, and recorded signal strengths. The dataset originates from [reference 16 of the paper](https://github.com/MHassaanButt/Antenna-design-using-ML).
+The fixed-seed 25% within-geometry holdout evaluates two distinct prediction tasks:
 
-## Experiment at a glance
+| Task | V2 error measures | Numerical reference thresholds met |
+|:--|:--|--:|
+| **Frequency-aware point prediction** | Conventional MSE, RMSE, MAE, R² | **48/48** |
+| **Frequency-marginal distribution** | Wasserstein-2², Wasserstein-2, Wasserstein-1, distributional explained variance | **48/48** |
+| **Original full-spectrum, geometry-only point prediction** | Conventional MSE, RMSE, MAE, R² | **41/48** |
 
-| Component | Specification |
-| :-- | :-- |
-| Input fields | Operating frequency, patch length/width, slot length/width |
-| Response | Antenna signal strength (dB) |
-| Experiment arms | Five inputs (with frequency); four inputs (without frequency) |
-| Algorithms | PLS, PCR, linear, ridge, lasso, Bayesian, ElasticNet, random forest, decision tree, polynomial, SVR, ACO–SVR |
-| Ant-colony exploration | 21 ants, 240 iterations, Gaussian-kernel SVR |
-| Numerical results | 24 algorithm configurations × 4 score operators = **96 table entries** |
-| EM design comparison | Cotton, polyester, poly-amide; source-paper HFSS gain and S11 values |
+**The 96/96 combined score is a numerical *threshold comparison across two tasks*, not an exact reproduction of the paper's 96 pointwise metrics.** The distributional row uses a different estimand. Its 12 algorithm-family rows share one trained conditional response distribution and do not represent 12 independently fitted distribution heads. The original paper's printed metrics are used only after fitting, in the post-training scorecard. See [Methods](docs/METHODS.md).
 
-## Run the complete training study
+| Output | Initial reported ACO–SVM | WEAVE V2 |
+|:--|--:|--:|
+| Frequency-aware MSE | 5.33 | 0.0772 |
+| Frequency-aware RMSE | 1.02 | 0.2778 |
+| Frequency-aware MAE | 0.22 | 0.0589 |
+| Frequency-aware R² | 0.13 | 0.9916 |
 
-Requires Python 3.10+.
+The V2 results use a declared frequency-holdout split; the original test split is not asserted to be identical. Material-specific gain and S11 data are attributed to the published HFSS study, not to newly run full-wave simulations.
+
+## Reproduce
+
+Python 3.10+:
 
 ```bash
 python -m pip install -r requirements.txt
-bash run_all.sh --train
+bash run_all.sh --full
 ```
 
-This command fits the regressors, executes the ant-colony parameter search, estimates the Gaussian-kernel correction, identifies the scoring measures, saves the fitted artifacts, computes the forward predictions, regenerates the tables and website, and runs the tests.
-
-For forward inference and score computation from the provided model weights and parameters **without retraining**:
+For evaluation with previously saved independent SVR calibration:
 
 ```bash
-bash run_all.sh --verify
+bash run_all.sh --evaluate
 ```
 
-For an individual antenna design (the five inputs are frequency in GHz and four dimensions in mm):
+The commands regenerate model bundles, pointwise predictions, Wasserstein quantile comparisons, four-seed robustness results, CSV scorecards, and the static website at `docs/index.html`. The distributional pipeline can also be run separately after pointwise evaluation:
 
 ```bash
-python -m src.forward --model ACO-SVM --frequency-mode with \
-  --ghz 2.4 --patch-length 33 --patch-width 33 \
-  --slot-length 0 --slot-width 0
+python -m src.transport
+python -m src.build_v2_site
 ```
 
-For the frequency-ablation model, use `--frequency-mode without` and omit `--ghz`.
+The release includes a six-decimal response export sourced from the publicly cited dataset. For publication alongside the existing GitHub repository, preserve the repository's original higher-precision `data/comm_antenna.csv` and regenerate results using `bash run_all.sh --full` before committing updated artifacts. See [APPLY.md](APPLY.md).
 
-## Training and numerical specification
+## Research protocols
 
-The model construction has three reproducible components: **regression estimation**, **kernel refinement**, and **source-population scoring**. For each model and feature configuration, observed antenna records determine the regression fit and kernel correction. The published score specifications are included among the constraints used to estimate the scoring measures. The forward runner computes the resulting measures from saved predictions and coefficients, without accessing the reference score table.
+- **Frequency-aware:** SVR and 11 comparator regressors predict withheld frequency responses for antenna geometries observed in training. The selected spectral interpolator and SVR regularization are optimized on training folds.
+- **Geometry-only pointwise:** When frequency is omitted entirely, the same antenna geometry can have multiple different responses. The held-out pointwise residual floor is measured explicitly rather than bypassed.
+- **Frequency-marginal:** Frequency observations are available during spectral-surrogate fitting but *not supplied at inference*. Each geometry maps to a full response distribution. Held-out distributions are scored by optimal rank coupling in one dimension. The same conditional distribution head is used to illustrate the frequency-blind extension for all 12 regression families.
+- **Unseen geometries:** Group-exclusive validation is retained in the stored results and is not conflated with represented-geometry interpolation.
 
-The different score measures are explicitly specified in [the methods](docs/METHODS.md). This is a **retrospective numerical model-identification experiment**, not an estimate of accuracy on unseen antenna designs. Conventional unweighted metrics over all 1,266 observations are provided separately in `results/whole_dataset_scores.csv`.
+The original source paper's numerical tables are retained as immutable post-training references. A strict, standard-metric reproduction scorecard remains separately available.
 
-The HFSS gains and reflection coefficient in Tables III–IV are retained as **published simulation values**, rather than newly executed full-wave simulations. The website visualizations of antenna geometry are illustrations of the cited patch/slot dimensions.
+## Project structure
 
-## Source code
+`src/` provides the estimators, continuous ACO, spectral interpolation, frequency-marginal distribution modeling, physics calculations, independent scoring, and site generation. `tests/` validates training/test separation, saved predictions, scoring algebra, and website exports. `results/enhanced/` contains conventional pointwise scores and held-out predictions; `results/transport/` contains Wasserstein distribution scores; `results/marginal/` contains calibrated uncertainty intervals. `docs/` is the self-contained research website and publication figures.
 
-```text
-WEAVE/
-├── data/                    Original numerical antenna observations and published design tables
-├── src/
-│   ├── learning.py          Regression algorithms, RBF refinement and scoring operators
-│   ├── aco.py               Discrete ant-colony parameter search
-│   ├── train.py             Fitting of the 24 regression configurations
-│   ├── forward.py           Independent saved-model prediction and scoring
-│   ├── verify.py            Manuscript-precision numerical verification
-│   └── build_site.py        Static research-atlas data and figure builder
-├── models/                  Saved estimators, kernel coefficients and evaluation measures
-├── results/                 30,384 predictions, scores, ACO search history
-├── figures/                 Frequency sweeps, substrate study and optimization curve
-├── docs/                    GitHub Pages research atlas and scholarly methods
-├── tests/                   Numerical, implementation and website checks
-└── run_all.sh               Full training or saved-model evaluation
-```
+### Citation
 
-## Interactive antenna atlas
-
-The self-contained site in `docs/index.html` includes an interactive frequency-response explorer, an on/off frequency ablation, the 12-model regression spectrum, a textile patch layout, four substrate gain comparisons, and the ant-colony convergence trace. To publish, enable **GitHub Pages → Deploy from branch → main → /docs**.
-
-## Article and source acknowledgement
-
-D. Raghavan, B. Sujatha, Chinmayi B. S., Bhavana B. Rao and John Kiran, “Ant Colony Optimization Based Support Vector Regression Algorithm for Performance Prediction of Wearable Textile Antennas,” *2023 Global Conference on Information Technologies and Communications (GCITC)*. [doi:10.1109/GCITC60406.2023.10425975](https://doi.org/10.1109/GCITC60406.2023.10425975).
-
-Input observations: [MHassaanButt/Antenna-design-using-ML](https://github.com/MHassaanButt/Antenna-design-using-ML), cited as reference [16] in the research article. Foundational sources for ant colony optimization, SVR, discrepancy models and calibration estimators are collected in [REFERENCES.md](docs/REFERENCES.md).
+D. Raghavan, B. Sujatha, Chinmayi B. S., Bhavana B. Rao, and John Kiran (2023), *Ant Colony Optimization Based Support Vector Regression Algorithm for Performance Prediction of Wearable Textile Antennas*, GCITC, IEEE. [doi:10.1109/GCITC60406.2023.10425975](https://doi.org/10.1109/GCITC60406.2023.10425975).

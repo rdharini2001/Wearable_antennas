@@ -1,0 +1,21 @@
+{
+  "data_rows": 1266,
+  "rounding_note": "Results use the exact source file supplied at runtime",
+  "heldout_frequency_seed": 2023,
+  "protocol_settings": {
+    "frequency_interpolation": {
+      "sweep_interpolator": "cubic",
+      "inner_cv_scores": {
+        "cubic": 0.14152298121499446,
+        "pchip": 0.1737246734494251,
+        "akima": 0.15576193940311242,
+        "linear": 0.21403717851509504
+      }
+    },
+    "geometry_holdout": {
+      "sweep_interpolator": null
+    }
+  },
+  "calibration_source": "results/discovery/results.json",
+  "metrics_rows": 84
+}

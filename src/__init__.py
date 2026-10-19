@@ -1,1 +1,1 @@
-"""WEAVE: antenna design regression models and scoring operators."""
+"""Wearable textile antenna regression experiments."""
