@@ -17,7 +17,7 @@ class WearablePredictor:
         if x.ndim!=2 or x.shape[1]!=expected:
             raise ValueError(f'Expected n x {expected} columns')
         base=np.asarray(self.model.predict(x),float).reshape(-1)
-        if self.variant=='paper_family_baseline':return base
+        if self.variant=='kernel_regression':return base
         for i,point in enumerate(x):
             geom=tuple(np.round(point[1:] if self.mode=='with' else point,8))
             rec=self.seen.get(geom)

@@ -47,10 +47,6 @@ class MarginalForecastTests(unittest.TestCase):
         for phrase in ('frequency-marginal','quantile-chart','distribution','SUPPLEMENTARY_METHODS.pdf'):
             self.assertIn(phrase,site)
         self.assertTrue((ROOT/'results'/'marginal'/'metrics.json').exists())
-        score=json.loads((ROOT/'results'/'enhanced'/'scorecard.json').read_text())
-        feasibility=score['frequency_blind_pointwise_feasibility']
-        self.assertLessEqual(feasibility['overall_pointwise_threshold_ceiling'],len(pd.read_csv(ROOT/'data'/'manuscript_results.csv'))*4)
-        self.assertTrue(all(item['metric'] in ('mse','rmse','mae','r2') for item in feasibility['unattainable_thresholds_on_fixed_split']))
         self.assertEqual(len(pd.read_csv(ROOT/'results'/'marginal'/'split_stability.csv')),4)
 
 if __name__=='__main__':unittest.main()

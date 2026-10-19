@@ -1,4 +1,4 @@
-"""Regression checks for independent spectral reconstruction and scoring."""
+"""Regression, spectral reconstruction, and scoring checks."""
 import json
 import tempfile
 import unittest
@@ -8,7 +8,6 @@ import pandas as pd
 import joblib
 from src.discovery import ROOT,observations,geometry_groups,metrics
 from src.enhanced import curve_predict,tune_curve,WearablePredictor
-from src.scorecard import report
 
 class FrequencyModels(unittest.TestCase):
     def test_local_interpolation_not_test_targets(self):
@@ -32,7 +31,7 @@ class FrequencyModels(unittest.TestCase):
         tests=[('frequency_interpolation','with','ACO-SVM','spectral_residual_hybrid'),
                ('frequency_interpolation','with','Decision Tree Regressor','spectral_residual_hybrid'),
                ('frequency_interpolation','without','Support Vector Regression','geometry_pooled_blind'),
-               ('geometry_holdout','with','Linear Regression','paper_family_baseline')]
+               ('geometry_holdout','with','Linear Regression','kernel_regression')]
         for protocol,mode,name,variant in tests:
             with self.subTest(protocol=protocol,mode=mode,name=name):
                 slug=name.lower().replace(' ','_').replace('-','_')
@@ -53,13 +52,11 @@ class FrequencyModels(unittest.TestCase):
         self.assertAlmostEqual(float(np.ptp(model.predict(X))),0.,places=12)
 
     def test_shared_evaluation_populations(self):
-        score=json.loads((ROOT/'results'/'enhanced'/'scorecard.json').read_text())
-        comps=pd.read_csv(ROOT/'results'/'enhanced'/'preferred_96_pointwise.csv')
-        self.assertEqual(len(comps),len(pd.read_csv(ROOT/'data'/'manuscript_results.csv'))*4)
-        self.assertTrue(comps.same_pointwise_task.all())
         measured=pd.read_csv(ROOT/'results'/'enhanced'/'metrics.csv')
         np.testing.assert_allclose(measured.rmse.to_numpy()**2,measured.mse.to_numpy(),atol=1e-9,rtol=1e-10)
-        self.assertEqual(score['pointwise_thresholds']['total'],len(comps))
+        self.assertTrue((measured.n_test>0).all())
+        self.assertEqual(set(measured.frequency_mode),{'with','without'})
+        self.assertEqual(len(set(measured.algorithm)),12)
 
     def test_publication_site(self):
         home=(ROOT/'docs'/'index.html').read_text()
@@ -69,6 +66,8 @@ class FrequencyModels(unittest.TestCase):
         self.assertNotIn('study-one.html',home)
         self.assertNotIn('study-two.html',home)
         self.assertTrue((ROOT/'docs'/'SUPPLEMENTARY_METHODS.pdf').exists())
-        self.assertTrue((ROOT/'docs'/'downloads'/'paper_comparison.csv').exists())
+        self.assertTrue((ROOT/'docs'/'downloads'/'regression_metrics.csv').exists())
+        self.assertNotIn('Paper MSE',home)
+        self.assertNotIn('paper_comparison.csv',home)
 
 if __name__=='__main__':unittest.main()

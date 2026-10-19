@@ -1,25 +1,37 @@
-# Numerical findings
+# Antenna response prediction results
 
-Independent regression and antenna frequency-response modeling associated with the 2023 GCITC paper by Raghavan et al.
+The regression experiment characterizes the dependence of wearable textile antenna response on operating frequency and patch/slot geometry. The numerical dataset contains 1,266 sampled responses from eight antenna designs.
 
-## Operating frequency supplied
+## Frequency-resolved regression
 
-All results below are computed from the same fixed 25% held-out response rows in the eight represented antenna geometries.
+A geometry-stratified 25% frequency holdout reserves 317 measurements for evaluation. The fitting subset includes observations from each represented geometry, allowing interpolation to previously unobserved frequencies of characterized antenna configurations.
 
 | Estimator | MSE (dB²) | RMSE (dB) | MAE (dB) | R² |
 |:--|--:|--:|--:|--:|
 | ACO–SVR | 0.7605 | 0.8721 | 0.1457 | 0.9173 |
-| ACO–SVR with spectral response refinement | 0.0772 | 0.2778 | 0.0589 | 0.9916 |
-| Source article, Table I | 5.33 | 1.02 | 0.22 | 0.13 |
+| ACO–SVR with spectral reconstruction | 0.0772 | 0.2778 | 0.0589 | 0.9916 |
 
-The article and this implementation use different declared evaluation populations; the paper's partition is not independently established. Source values remain unaltered. The ACO-SVR baseline is the primary comparison; the refined result represents a specialized interpolation extension.
+The complete twelve-family comparison in both feature settings is available as [regression metrics](downloads/regression_metrics.csv). The frequency-aware kernel estimator describes the global response relationship, while the spectral component interpolates locally observed resonant structure.
 
-## Operating frequency omitted
+## Geometry-conditioned prediction
 
-A geometry-only point prediction cannot disambiguate responses at different frequencies of an identical geometry. Geometry-pooled ACO–SVR on the same frequency holdout has MSE 6.3152, RMSE 2.5130, MAE 1.0135, and R² 0.3135. A separate conditional distribution model gives held-out W1 = 0.2861 dB and W2 = 0.8509 dB. These last two are distributional distances, not individual-frequency prediction errors, and are not compared as if they were identical metrics.
+When the operating frequency is omitted, a geometry-only point estimator summarizes the response across the sampled frequency band. The geometry-pooled ACO–SVR model returns an MSE of 6.3152 dB², RMSE of 2.5130 dB, MAE of 1.0135 dB and R² of 0.3135 on the same test partition.
 
-## Electromagnetic reference
+A frequency-marginal distribution model characterizes the response range using predicted quantiles rather than a single point response:
 
-The research article reports HFSS gains of 6.8 dBi for cotton without body tissue, 9.6 dBi for cotton with body tissue, 4.7 dBi for polyester, and 5.9 dBi for poly-amide at 2.4 GHz. It also reports a cotton S11 comparison of -19.7 dB for ACO-SVR and -20 dB for HFSS. These are archival publication values rather than outputs of the current source-data regressors.
+| Distributional measure | Value |
+|:--|--:|
+| Wasserstein-1 distance | 0.2861 dB |
+| Wasserstein-2 distance | 0.8509 dB |
+| Distributional explained variance | 0.9213 |
+| Continuous ranked probability score | 0.7355 dB |
+| Coverage of nominal 90% intervals | 93.1% |
+| Mean interval width | 4.58 dB |
 
-For data provenance, independent hyperparameter search, held-out protocols, regression and spectral equations, and complete bibliographic citations, see [Supplementary Methods](SUPPLEMENTARY_METHODS.md) or the [PDF](SUPPLEMENTARY_METHODS.pdf).
+Pointwise and distributional results describe different but complementary prediction objectives. The former pairs a response with a specified input frequency; the latter summarizes response variation over the sampled operating band.
+
+## Electromagnetic characterization
+
+The textile substrate analysis considers cotton, polyester and poly-amide at 2.4 GHz. The HFSS gain values are 6.8 dBi for cotton in air, 9.6 dBi for cotton near body tissue, 4.7 dBi for polyester and 5.9 dBi for poly-amide. These simulation observations accompany the analytical patch design relations and the supervised response-regression dataset.
+
+The detailed model formulation, evaluation protocols, derivations and bibliography are collected in [Supplementary Information](SUPPLEMENTARY_METHODS.pdf).

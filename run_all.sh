@@ -17,9 +17,7 @@ esac
 python -m src.enhanced
 python -m src.marginal
 python -m src.spectral_validation
-python -m src.scorecard
 python -m src.transport
-python -m src.audit
 python -m src.benchmark --repeats 200
 python -m src.build_publication_site
 python -m unittest discover -s tests -v

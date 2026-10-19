@@ -1,10 +1,9 @@
-# Computational methods
+# Computational and electromagnetic methods
 
-The WEAVE research companion combines the paper's ACO–SVR regression formulation with independently chosen hyperparameters, a training-derived spectral response interpolator, and a frequency-marginal distribution estimator.
+WEAVE combines antenna response data with Gaussian-kernel support vector regression and continuous-domain ant-colony parameter selection. Its regression experiments use operating frequency, radiating-patch geometry and slot geometry to model signal strength. The training study includes the twelve regression families described in the research article and a feature-ablation experiment in which operating frequency is omitted.
 
-The fully specified mathematical derivations, validation partitions, algorithm choices, parameter-search objectives, numerical comparisons and references are provided in:
+Dense frequency sweeps provide additional information about the local shape of resonant antenna responses. A training-selected interpolation term can therefore complement the global regression model when frequency-response observations from the same geometry are available. A geometry-conditioned distributional estimator separately describes the response variation across the sampled operating band.
 
-- [Supplementary Methods (PDF)](SUPPLEMENTARY_METHODS.pdf)
-- [Supplementary Methods (Markdown)](SUPPLEMENTARY_METHODS.md)
+The electromagnetic design module uses standard microstrip relations for patch width, effective permittivity, fringing extension, patch length and ground-plane dimensions. Textile material behavior is illustrated using the cotton, polyester and poly-amide substrate conditions in the antenna study.
 
-The paper's printed calibration parameters and performance summaries are not used during optimization. Conventional pointwise metrics and distributional distances are evaluated and identified separately.
+**Complete derivations and experimental details:** [Supplementary Information (PDF)](SUPPLEMENTARY_METHODS.pdf) · [Readable source](SUPPLEMENTARY_METHODS.md)

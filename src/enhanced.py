@@ -137,7 +137,7 @@ def run(data=None,output=None,calibration=None,seed=SEED):
                     model.fit(X[train],y[train])
                 pred_tr=np.asarray(model.predict(X[train]),float).ravel()
                 pred_test=np.asarray(model.predict(X[test]),float).ravel()
-                variants={'paper_family_baseline':pred_test}
+                variants={'kernel_regression':pred_test}
                 if mode=='with' and chosen and protocol=='frequency_interpolation':
                     variants['spectral_residual_hybrid']=(spectral_direct_prediction(frame,groups,train,test,chosen)
                         if name in ('Random Forest Regressor','Decision Tree Regressor')
@@ -155,7 +155,7 @@ def run(data=None,output=None,calibration=None,seed=SEED):
                                            testfreq=float(frame.TestFreq.iloc[i]),observed_db=float(y[i]),
                                            predicted_db=float(p)) for i,p in zip(test,pred))
                 saved_variant=('spectral_residual_hybrid' if mode=='with' and protocol=='frequency_interpolation'
-                               else 'geometry_pooled_blind' if mode=='without' else 'paper_family_baseline')
+                               else 'geometry_pooled_blind' if mode=='without' else 'kernel_regression')
                 bundle=build_bundle(model,saved_variant,mode,chosen,frame,groups,train,pred_tr,name)
                 # This artifact contains the fitted model and observed TRAINING sweep nodes.
                 slug=name.lower().replace(' ','_').replace('-','_')

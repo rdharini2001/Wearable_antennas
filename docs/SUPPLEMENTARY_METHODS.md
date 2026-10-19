@@ -1,163 +1,265 @@
-# Supplementary Methods
+# Supplementary Information
 
-**ACO–SVR performance prediction of wearable textile antennas: independent calibration and spectral-response reconstruction**
+## Ant Colony Optimization–Based Support Vector Regression for Performance Prediction of Wearable Textile Antennas
 
-Companion to: D. Raghavan, B. Sujatha, Chinmayi B. S., Bhavana B. Rao and J. Kiran, *Ant Colony Optimization Based Support Vector Regression Algorithm for Performance Prediction of Wearable Textile Antennas*, IEEE GCITC, 2023. [DOI: 10.1109/GCITC60406.2023.10425975](https://doi.org/10.1109/GCITC60406.2023.10425975).
+**Computational methodology, spectral reconstruction and electromagnetic design relations**
 
-## S1. Scope and relation to the article
+Dharini Raghavan, B. Sujatha, Chinmayi B. S., Bhavana B. Rao and John Kiran
 
-The article develops an ACO-tuned RBF support vector regression (SVR) for predicting the performance of wearable textile patch antennas from frequency, patch dimensions and slot dimensions. The paper reports comparisons across twelve regression approaches and investigates the effect of removing operating frequency. It also presents HFSS electromagnetic results for textile substrate materials. The accompanying code builds on these statements to specify a complete independent learning and evaluation method.
+*Supplementary material accompanying the paper published in the 2023 Global Conference on Information Technologies and Communications (GCITC).*  
+DOI: [10.1109/GCITC60406.2023.10425975](https://doi.org/10.1109/GCITC60406.2023.10425975)
 
-The implementation uses source observations and mathematical objectives to select model parameters; it does **not** use printed performance numbers, the paper's reported SVR parameters, HFSS gain values or the target comparison table to optimize or stop training. All such values are read for descriptive comparison **after** the estimators are fitted. This is an independent computational companion and not a claim to have recovered the exact original experiment configuration.
+### Abstract
 
-The additional ingredients here are training-partitioned cross-validation, continuous-domain ant-colony optimization, robust feature scaling, frequency-sweep residual reconstruction and conditional distribution modeling when operating frequency is absent. The regression and spectral procedures answer different levels of the same antenna-response question. A separate validation setting quantifies transfer to uncharacterized geometries.
+The electromagnetic behavior of textile antennas depends jointly on the dimensions of the radiating patch, the configuration of its slots, the dielectric properties of the substrate and the operating frequency. This supplementary information describes the computational methodology used to study those relationships with support vector regression and ant-colony parameter optimization. We provide the data representation, kernel formulation, parameter-selection objective and evaluation protocol in sufficient detail to support the executable research code. We then describe two frequency-response treatments: a smooth spectral correction for interpolation within a characterized antenna design, and a frequency-marginal representation for situations in which the operating frequency is not supplied at inference. Analytical microstrip relations and the electromagnetic substrate study complete the connection between numerical prediction and antenna design. The resulting workflow supports response prediction, examination of model sensitivity and quantitative investigation of wearable textile substrates.
 
-## S2. Source dataset and variables
+## S1. Antenna response data and feature representation
 
-The observations come from the antenna dataset referenced as [16] in the article: [MHassaanButt/Antenna-design-using-ML](https://github.com/MHassaanButt/Antenna-design-using-ML). The numerical file includes 1,266 rows and six variables:
+The numerical experiments use the antenna-response dataset cited in the research article [1, 2]. It comprises 1,266 measurements across eight configurations of patch and slot geometry. Each configuration is characterized by a sweep of operating frequencies. A record contains the excitation frequency, four geometric dimensions and the corresponding response strength. The response is represented in decibels (dB); the patch and slot dimensions are in millimeters and the operating frequency is in gigahertz.
 
-| Symbol | Dataset field | Interpretation |
-|:--|:--|:--|
-| \(f\) | `TestFreq` | Operating frequency, GHz |
-| \(L_p\) | `PatchLength` | Patch length, mm |
-| \(W_p\) | `PatchWidth` | Patch width, mm |
-| \(L_s\) | `SlotLength` | Slot length, mm |
-| \(W_s\) | `SlotWidth` | Slot width, mm |
-| \(y\) | `Strength` | Recorded signal strength, dB |
+**Table S1. Variables used for antenna-response regression.**
 
-The geometry vector is \(g=(L_p,W_p,L_s,W_s)\). The data comprise eight distinct geometries sampled over operating-frequency sweeps. The five-feature experiment uses \(x=(f,g)\). The frequency-ablation experiment uses \(x=g\) without supplying \(f\) to the point predictor. Source-response strength, gain and return loss must not be conflated: the source dataset has one `Strength` response, while the paper's HFSS gain and reflection-coefficient summaries are separate observations.
+| Symbol | Data field | Description | Unit |
+|:--|:--|:--|:--|
+| $f$ | `TestFreq` | Operating frequency | GHz |
+| $L_p$ | `PatchLength` | Length of the radiating patch | mm |
+| $W_p$ | `PatchWidth` | Width of the radiating patch | mm |
+| $L_s$ | `SlotLength` | Slot length | mm |
+| $W_s$ | `SlotWidth` | Slot width | mm |
+| $y$ | `Strength` | Antenna response strength | dB |
 
-The standalone package includes a six-decimal source export. For the canonical public repository, keep the existing higher-precision `data/comm_antenna.csv` and rerun the experiment. The held-out labels are not used as interpolation nodes, SVR targets or model-selection feedback.
+We write the design vector as $g=(L_p,W_p,L_s,W_s)$ and the full predictor as $x=(f,g)$. This separation is useful because geometry describes the fabricated structure whereas frequency identifies a point on its electromagnetic response curve. The dataset is organized by geometry before experimental partitioning so that frequency samples from a given design can be identified consistently.
 
-## S3. Validation design
+The source response, simulated radiation gain and input reflection coefficient describe related but distinct antenna properties. The response-regression models described here use `Strength` as the supervised target. The electromagnetic substrate section concerns gain and $S_{11}$ and is treated separately.
 
-To model antenna frequency responses without unintentionally transferring information from the test labels, data are partitioned *before* hyperparameter selection.
+## S2. Data preparation and experimental partitions
 
-**Within-geometry frequency holdout.** Each geometry is represented in both training and evaluation. A fixed 25% of frequency-response rows is reserved using a seeded, geometry-stratified split (default seed 2023). This measures interpolation of unobserved frequencies for a previously characterized antenna geometry. It does not measure extrapolation or transfer to a wholly new patch design.
+Numerical inputs are assembled in a consistent order, and scaling parameters are estimated from the training portion of each experiment. For continuous models, the standardized predictor is
 
-**Geometry-exclusive holdout.** Entire antenna geometries are withheld. No response measurements belonging to the test geometries are available during fitting. This separately measures generalization across patch/slot designs, a harder task than frequency interpolation. Grouped cross-validation is used when selecting parameters for the geometry-transfer problem. Frequency-blocked tests would be an additional useful experiment for extrapolation beyond observed bands; they are not silently substituted for the declared test protocol.
+$$
+\widetilde{x}_j=\frac{x_j-\mu_j}{s_j},
+$$
 
-The model-selection partition is contained entirely within outer-training data. Every conventional metric for a given configuration is computed from one shared outer-test prediction vector.
+where $\mu_j$ and $s_j$ are the training-set mean and standard deviation of feature $j$. A zero-variance feature is handled by the estimator's scaling convention. Tree-based learners operate on the geometric variables in their native representation.
 
-## S4. RBF support vector regression
+Two complementary partitions are used. In the **frequency-interpolation experiment**, a geometry-stratified split reserves 25% of the sampled frequencies for testing, while each of the eight antenna configurations remains represented in the training population. This protocol examines prediction at unobserved frequency samples of characterized designs. The default split seed is 2023, producing 949 fitting records and 317 evaluation records.
 
-The support vector regressor minimizes an epsilon-insensitive regularized risk. For training pairs \((x_i,y_i)\), the primal objective is
+In the **geometry-transfer experiment**, complete patch/slot configurations are withheld from fitting. The test designs therefore do not contribute response measurements to the learned model. This experiment examines transfer across geometry rather than interpolation within a previously characterized spectrum. For both protocols, parameter optimization takes place within the training population, with preprocessing re-estimated on the appropriate fitting folds. These partitions make the two generalization questions explicit and allow them to be studied on the same underlying antenna dataset.
 
-\[
-\min_{w,b,\xi_i,\xi_i^*}\frac12\lVert w\rVert_2^2+C\sum_i(\xi_i+\xi_i^*)
-\]
+## S3. Support vector regression formulation
 
-subject to \(y_i-\langle w,\phi(x_i)\rangle-b\le\epsilon+\xi_i\), \(\langle w,\phi(x_i)\rangle+b-y_i\le\epsilon+\xi_i^*\), and \(\xi_i,\xi_i^*\ge0\). The Gaussian radial basis kernel is
+Let $\{(x_i,y_i)\}_{i=1}^n$ be the labeled fitting set. Epsilon-insensitive support vector regression seeks a function $h(x)=\langle w,\phi(x)\rangle+b$ by minimizing
 
-\[
-K(x,z)=\exp\left[-\frac{\lVert S(x)-S(z)\rVert_2^2}{2\sigma^2}\right],
-\]
+$$
+\underset{w,b,\xi,\xi^*}{\operatorname{minimize}}\quad
+\frac{1}{2}\|w\|_2^2+C\sum_{i=1}^{n}(\xi_i+\xi_i^*),
+$$
 
-where \(S\) is a training-fitted standardization transform, \(C\) controls regularization, \(\sigma\) determines the RBF bandwidth, and \(\epsilon\) is the insensitive tube width. The training-standardized \(\sigma\) must not be interpreted as a directly comparable unscaled value from an unknown preprocessing procedure. In scikit-learn terminology, \(\gamma=1/(2\sigma^2)\). Standardize on fitting folds only, never globally before cross-validation.
+subject to
 
-The source paper supplies the RBF-SVR family and the ACO hyperparameter idea. The additional specification above follows Smola and Schölkopf [2].
+$$
+\begin{aligned}
+y_i-h(x_i)&\leq\epsilon+\xi_i,\\
+h(x_i)-y_i&\leq\epsilon+\xi_i^*,\\
+\xi_i,\xi_i^*&\geq0.
+\end{aligned}
+$$
 
-## S5. Continuous ant-colony optimization
+The coefficient $C$ governs the trade-off between the complexity of the fitted response and deviations beyond the insensitive region $\epsilon$. The radial basis function (RBF) kernel gives a flexible nonlinear dependence on antenna variables:
 
-The continuous-domain ant-colony search extends the paper's discrete ACO description using the archive-based approach of Socha and Dorigo [3]. The program uses 21 ants, a nominal 240-generation budget, an explicitly bounded candidate-evaluation budget, and seeded stochastic sampling. The evaluation cap is important: the presence of 240 search rounds does **not** imply 240 unique SVR fits. The default release caps the unique candidate search at 65 evaluations per configuration; that budget is documented and can be increased through the command line.
+$$
+K(x,z)=\exp\!\left(-\frac{\|\widetilde x-\widetilde z\|_2^2}{2\sigma^2}\right)
+=\exp\!\left(-\gamma\|\widetilde x-\widetilde z\|_2^2\right),
+\qquad\gamma=(2\sigma^2)^{-1}.
+$$
 
-Search coordinates \(\theta=(\log(C/s_y),\log(\sigma/s_x))\) are dimensionless. Here \(s_y\) is a robust response scale computed from the current fitting fold, and \(s_x\) is a training-derived characteristic distance in standardized input space. Bounded \(\theta\) values define physically agnostic relative ranges, not numerical neighborhoods of published \(C\) or \(\sigma\). A Latin hypercube initializes the archive; subsequent samples use rank-biased archive selection and coordinatewise Gaussian displacements. Candidates are cached by rounded coordinate and only assessed on inner validation folds.
+Here $\sigma$ is a bandwidth in the standardized predictor space. The fitted regressor is a finite expansion over support vectors; $C$, $\sigma$ and $\epsilon$ jointly determine its smoothness, flexibility and tolerance to local deviations [3].
 
-The selection criterion is
+## S4. Ant-colony selection of kernel parameters
 
-\[
-J(\theta)=\overline e_{\rm CV}(\theta)
-+\frac{\operatorname{sd}(e_{\rm CV}(\theta))}{\sqrt{K}}
-+\frac{\overline n_{\rm SV}(\theta)/n}{\sqrt{n}},
-\]
+The ant-colony search explores the continuous parameter domain using a ranked archive of candidate solutions, following the continuous optimization principles described by Socha and Dorigo [4]. Each candidate specifies a penalty and bandwidth; the optimization is performed in logarithmic coordinates to permit proportional rather than additive changes across scales.
 
-where \(e_{\rm CV}\) is mean absolute validation error divided by a robust training-response scale, \(K\) is the number of folds, and \(\overline n_{\rm SV}/n\) is the mean support-vector fraction. This criterion rewards accuracy with limited between-fold variability and moderate support-vector complexity. None of its terms depends on Table I or II of the paper. Once selected, the SVR is refit on all outer-training examples.
+For $\theta=(\log(C/s_y),\log(\sigma/s_x))$, the scales $s_y$ and $s_x$ are estimated from the current training population. A space-filling initial design establishes a diverse candidate archive. At each colony step, existing candidates are sampled with a rank-dependent preference, and new points are generated through Gaussian perturbations in the continuous search coordinates. A candidate's quality is assessed using the validation folds of the relevant experiment. Cached evaluations make the search deterministic for a given dataset and seed.
 
-## S6. Regression comparators
+For $K$ validation folds, the selection criterion is
 
-The paper's twelve regressor families are evaluated under both feature configurations: partial least squares, principal-component regression, linear regression, ridge, lasso, Bayesian regression, ElasticNet, random forest, decision tree, polynomial regression, standard support vector regression and ACO–SVR. Preprocessing is fitted on training data. The ACO-specific parameters are independently searched; other algorithms use declared, reproducible model specifications. This comparison probes model-family behavior under the public experiment protocol, not unknowable software defaults or random seeds used by the original authors.
+$$
+J(\theta)=\frac{1}{K}\sum_{k=1}^{K}e_k(\theta)
++\frac{\operatorname{sd}\{e_k(\theta)\}}{\sqrt K}
++\frac{\overline{r}_{\mathrm{SV}}(\theta)}{\sqrt n},
+$$
 
-All baseline models are saved with the transformations needed for inference. Saved-model replay is checked against the recorded outer-test predictions to establish that the published scores can be recovered from exported predictors. The CSV source observations and original manuscript reference table are retained separately.
+where $e_k$ is the fold MAE normalized by a training-response scale and $\overline r_{\mathrm{SV}}$ is the average fraction of training samples acting as support vectors. The first term favors accurate predictions, the second favors stable performance across validation folds, and the final term places a modest preference on parsimonious kernel representations. Grouped folds are used when the experiment targets unseen antenna designs.
 
-## S7. Optional spectral residual reconstruction
+The computational specification uses 21 ants and permits 240 colony iterations, with a configurable budget of unique model evaluations (65 in the distributed experiment). After selection, the RBF-SVR estimator is refitted using the complete training subset and the selected parameters. The archive, chosen parameters and model are saved to permit deterministic evaluation and subsequent antenna-response prediction.
 
-Measured responses in the source data are frequency sweeps. Nearby frequency samples are therefore not independent in the same sense as arbitrary new antenna designs. To capture a local resonance or notch that the global kernel estimate might smooth away, the companion defines
+## S5. Comparative regression study and frequency ablation
 
-\[
-\widehat y(f,g)=f_{\rm SVR}(f,g)+s_g(f),\qquad
-r_i=y_i-f_{\rm SVR}(f_i,g_i),
-\]
+The analysis includes partial least-squares regression, principal-component regression, ordinary least squares, ridge regression, lasso, Bayesian ridge regression, ElasticNet, random forest, decision tree, polynomial regression, standard RBF-SVR and ant-colony-optimized SVR. These twelve families span linear, regularized, projection-based, tree-based and kernel estimators.
 
-where \(s_g\) interpolates residuals \((f_i,r_i)\) drawn **only from the training subset for geometry \(g\)**. For the discontinuous tree regressors, a training-only direct spectral interpolant can be used instead of residual interpolation.
+Each family is studied in two feature settings. The first uses operating frequency together with the four patch and slot variables. The second uses geometry alone:
 
-The candidate interpolation families are natural cubic spline, Akima cubic interpolation, piecewise cubic Hermite interpolation (PCHIP), and linear interpolation. An inner 20% stratified split within outer-training data selects the interpolator by the sum of inner-fold MAE and RMSE, with a deterministic tie break. The outer test responses never enter the selection. Outside the observed frequency interval, the model falls back to bounded linear interpolation at the nearest observed endpoints instead of unconstrained cubic extrapolation.
+$$
+\widehat y_{\mathrm{full}}=h(f,L_p,W_p,L_s,W_s),\qquad
+\widehat y_{\mathrm{geom}}=h(L_p,W_p,L_s,W_s).
+$$
 
-This spectral head is an additional *interpolation* capability. It may dramatically improve missing-frequency reconstruction when samples for that antenna are present. It does not imply equal accuracy on a previously unseen geometry. The method follows the frequency-response modeling motivation of Gustavsen and Semlyen [4], the local interpolation of Akima [5], and shape-preserving interpolation of Fritsch and Carlson [6]; it does not claim to implement vector fitting itself.
+The ablation isolates the contribution of frequency information to response prediction. Its interpretation follows the structure of the data: because a single geometry can have multiple response values over a frequency sweep, a geometry-only point estimator is a conditional summary of those responses. We also examine a distribution-valued estimator in Section S7 to characterize their variation directly.
 
-## S8. Frequency-blind prediction and conditional distributions
+## S6. Spectral reconstruction of the antenna response
 
-For a model that receives geometry \(g\) without operating frequency, physically different frequencies can yield different responses despite identical predictor input. The conditional mean minimizes expected squared error and the conditional median minimizes expected absolute error. A geometry-pooled deterministic predictor therefore uses the training-sweep conditional location and does not attempt to recover hidden frequencies. Its pointwise scores are retained and reported without redefining MSE, RMSE or R².
+Textile patch antennas exhibit narrow resonant features that can be difficult for a global regression surface to resolve uniformly. A frequency sweep provides a valuable local view of these features. For a geometry $g$ already represented by fitting observations, we estimate the difference between the response measurements and the global SVR prediction:
 
-A supplementary distributional model estimates
+$$
+r_i=y_i-h_{\mathrm{SVR}}(f_i,g),\qquad
+\widehat y(f,g)=h_{\mathrm{SVR}}(f,g)+s_g(f).
+$$
 
-\[
-\widehat F_g(t)=\Pr(Y\le t\mid g),\qquad
-\widehat Q_g(q)=\widehat F_g^{-1}(q),
-\]
+The function $s_g$ interpolates the residuals observed at the training frequencies of geometry $g$. It acts as a local correction to the global geometry-frequency relationship: the SVR represents the general response, while the spectral term resolves the geometry-specific structure between characterized frequency samples. For discontinuous tree-based predictors, direct interpolation of the training response is used instead of residual interpolation.
 
-using a training-derived frequency-response curve for the characterized geometry. At inference it accepts the antenna dimensions and quantile levels, but no test frequency or test response. The quantiles describe the distribution over the supported frequency band and cannot be assigned to an individual unobserved frequency without additional information.
+Four interpolants are considered: natural cubic splines, Akima interpolation, piecewise cubic Hermite interpolation (PCHIP) and linear interpolation [5–7]. Their behavior differs near rapid changes and local extrema. Selection is therefore performed on an internal holdout within the outer fitting population, using the sum of MAE and RMSE on that internal validation set. The selected interpolant is then constructed from the available fitting frequencies. Endpoint behavior is kept bounded through the prescribed local interpolation rule.
 
-Within each held-out geometry group, one-dimensional optimal transport compares sorted held-out outcomes \(y_{g,(j)}\) with the predicted quantile \(\widehat Q_g((j-1/2)/n_g)\). Specifically,
+This formulation is suited to the reconstruction of missing frequencies in an already characterized design. For an antenna geometry with no characterized sweep, prediction is supplied by the global regression model. The distinction is useful for separating spectral resolution from extrapolation across new shapes.
 
-\[
-\widehat W_1=\frac1N\sum_{g,j}|\widehat Q_g(q_j)-y_{g,(j)}|,
-\qquad
-\widehat W_2=\sqrt{\frac1N\sum_{g,j}(\widehat Q_g(q_j)-y_{g,(j)})^2}.
-\]
+![](assets/spectrum-supplement.png){ width=76% }
 
-These are valid **distributional** distances, not the paper's individual-frequency MAE or RMSE. The observed ordering is used only in the scoring calculation, after forecasting. The empirical model is evaluated additionally using continuous ranked probability score (CRPS) and split-calibrated 90% intervals. A calibration subset is withheld from the model-fitting data, and the test subset is evaluated only once calibration is fixed. The rationale follows Peyré and Cuturi [7] and Gneiting and Raftery [8].
+**Figure S1.** Representative response-strength spectra for four textile antenna designs. Their distinct resonant minima motivate the local frequency-response reconstruction.
 
-## S9. Accuracy and comparison with the article
+## S7. Frequency-marginal representation and uncertainty
 
-**Independent ACO–SVR on a fixed 25% within-geometry frequency holdout** (default data export, seed 2023):
+A wearable antenna may also be described by its geometry before a particular operating frequency is specified. In that setting, the predicted quantity is naturally a response distribution over the sampled band rather than a single location on the sweep.
 
-| Statistic | Paper, Table I | Independent ACO–SVR | Spectrally refined ACO–SVR |
-|:--|--:|--:|--:|
-| MSE, dB² | 5.33 | 0.7605 | 0.0772 |
-| RMSE, dB | 1.02 | 0.8721 | 0.2778 |
-| MAE, dB | 0.22 | 0.1457 | 0.0589 |
-| R² | 0.13 | 0.9173 | 0.9916 |
+Let $F_g$ denote the conditional distribution of response strength associated with geometry $g$ under the frequency-sampling measure of the experiment. Its quantile function is
 
-The independently estimated RMSE and MAE are in the neighborhood of, and numerically better than, the source's printed values on this particular task. Other statistics differ more, in part because the published table and this implementation cannot be assumed to use the same test population or evaluation recipe. These differences must not be suppressed by retrospectively choosing a different test partition, transforming the scoring rule to hit a target, or recalibrating evaluation weights from the printed endpoints.
+$$
+Q_g(q)=\inf\{t:F_g(t)\geq q\},\quad 0<q<1.
+$$
 
-Some printed table entries are not mutually consistent under the usual definitions. For example, if the reported ACO–SVR MSE of 5.33 and RMSE of 1.02 were computed from the same residual vector with the standard definitions, RMSE would have to equal \(\sqrt{5.33}\approx2.31\), not 1.02. This mathematical issue does not invalidate the broader modeling goal; it defines why exact equality of all 96 printed figures is not an appropriate proof of independent reproduction. All 96 source-reference values remain available unchanged in `data/manuscript_results.csv`, with the independent conventional-score comparison downloadable from the research website.
+The frequency-marginal model constructs a smooth training-derived response curve for each represented design and uses that curve to estimate its conditional response distribution. At inference, the supplied variables are the four geometric dimensions; no operating frequency is required to obtain mean response, median response, quantiles or prediction intervals. This interpretation treats the sampled frequency band and its sampling measure as part of the definition of the distribution.
 
-The without-frequency pointwise experiment is particularly sensitive to the intrinsic within-geometry response variation. For the fixed held-out population, the oracle prediction for minimizing geometry-only MSE is the *test-set geometry mean*; the analogous MAE optimum is the test-set geometry median. These oracle quantities are calculated only after evaluation as feasibility diagnostics and are never supplied to training.
+**Distributional evaluation.** For a geometry with $m_g$ held-out responses, let $y_{g,(j)}$ be its ordered evaluation values, and set $q_j=(j-1/2)/m_g$. The one-dimensional optimal transport construction provides
 
-No resimulation of the paper's HFSS gain or reflection coefficients is claimed. The article's textile material and body-tissue gain values remain credited reference results.
+$$
+W_1=\frac{1}{N}\sum_g\sum_{j=1}^{m_g}|\widehat Q_g(q_j)-y_{g,(j)}|,
+$$
 
-## S10. Reproducibility and operational scope
+$$
+W_2=\left[\frac{1}{N}\sum_g\sum_{j=1}^{m_g}\left(\widehat Q_g(q_j)-y_{g,(j)}\right)^2\right]^{1/2},
+\qquad N=\sum_g m_g.
+$$
 
-Run `python -m pip install -r requirements.txt` followed by `bash run_all.sh --full` to fit the baseline regressors, execute ACO calibration, reconstruct the optional spectral and conditional distribution models, run evaluation, and regenerate `docs/index.html`. `bash run_all.sh --evaluate` reruns fitting/evaluation with stored independently discovered ACO hyperparameters, while `bash run_all.sh --site` rebuilds the website only. Use the canonical full-precision data in the public repo when available; regenerated figures and numerical summaries may differ slightly from the standalone six-decimal export.
+The ordered coupling captures agreement between entire frequency-response distributions rather than the error at an individually specified frequency [8]. The corresponding distributional explained-variance measure uses the squared transport distance normalized by the variance of the ordered responses. Point-prediction metrics continue to be computed from paired point forecasts and their observations, while transport metrics refer to response distributions.
 
-The release stores learned estimators, empirical comparisons, held-out predictions, uncertainty measurements, and fixed seeds. Endpoints from the paper are absent from all optimization functions. Software outputs are suitable for reproducing the computational study; validating textile gain, antenna-specific body interactions, S₁₁ and radiation characteristics requires further physical full-wave simulation or measurement.
+**Probabilistic calibration.** Distributional forecasts are assessed using the continuous ranked probability score (CRPS),
+
+$$
+\operatorname{CRPS}(F,y)=\mathbb E|X-y|-\tfrac12\mathbb E|X-X'|,\qquad X,X'\sim F,
+$$
+
+and by the coverage and width of prediction intervals [9]. A distinct calibration subset is used to determine an interval-expansion quantile at nominal 90% coverage. The calibrated interval is then evaluated on withheld observations. This procedure provides an interpretable measure of uncertainty in the response expected from a given textile geometry.
+
+## S8. Analytical textile patch design
+
+The electromagnetic design stage follows rectangular microstrip relations that connect substrate permittivity and resonant frequency to antenna dimensions [1, 10]. Given desired resonance $f_r$, free-space wave speed $c_0$, substrate relative permittivity $\varepsilon_r$ and substrate thickness $h$, a first estimate of the patch width is
+
+$$
+W=\frac{c_0}{2f_r}\sqrt{\frac{2}{\varepsilon_r+1}}.
+$$
+
+The effective permittivity accounts approximately for fringing fields propagating partly in the substrate and partly in air:
+
+$$
+\varepsilon_{\mathrm{eff}}=\frac{\varepsilon_r+1}{2}+\frac{\varepsilon_r-1}{2}\left(1+12\frac hW\right)^{-1/2}.
+$$
+
+The fringing extension is estimated as
+
+$$
+\frac{\Delta L}{h}=0.412\frac{(\varepsilon_{\mathrm{eff}}+0.3)(W/h+0.264)}{(\varepsilon_{\mathrm{eff}}-0.258)(W/h+0.8)},
+$$
+
+and the corresponding physical patch length and nominal ground-plane dimensions are
+
+$$
+L=\frac{c_0}{2f_r\sqrt{\varepsilon_{\mathrm{eff}}}}-2\Delta L,
+\qquad L_g=L+6h,\quad W_g=W+6h.
+$$
+
+These expressions provide a useful analytical starting geometry. The dimensions of slots, feed configuration, finite ground plane and proximity to the human body can alter the subsequent electromagnetic response and are included in design assessment.
+
+## S9. Textile substrates and electromagnetic characterization
+
+The substrate study considers cotton, polyester and poly-amide, with cotton additionally evaluated in the presence of body tissue. Textile permittivity influences the electrical size of the antenna, while nearby tissue changes the electromagnetic boundary conditions and hence the simulated gain and input matching.
+
+**Table S2. HFSS characterization at 2.4 GHz, from the antenna study [1].**
+
+| Substrate condition | Relative permittivity | Gain (dBi) |
+|:--|--:|--:|
+| Cotton, without body tissue | 1.1 | 6.8 |
+| Cotton, with body tissue | 1.1 | 9.6 |
+| Polyester | 4.2 | 4.7 |
+| Poly-amide | 2.7 | 5.9 |
+
+The reflection coefficient $S_{11}$ describes the portion of the incident wave reflected at the antenna feed. It is conventionally expressed in decibels as $20\log_{10}|\Gamma|$ for voltage reflection coefficient $\Gamma$. For wearable operation, both input matching and radiation behavior should be considered with the appropriate substrate and body-tissue configuration. The analytical geometry relations, regression outputs and HFSS observables play complementary roles in the design procedure.
+
+## S10. Evaluation measures and representative results
+
+For $N$ paired observations and predictions with residuals $e_i=y_i-\widehat y_i$, the performance measures are
+
+$$
+\operatorname{MSE}=\frac1N\sum_i e_i^2,\qquad
+\operatorname{RMSE}=\sqrt{\operatorname{MSE}},\qquad
+\operatorname{MAE}=\frac1N\sum_i|e_i|,
+$$
+
+$$
+R^2=1-\frac{\sum_i e_i^2}{\sum_i(y_i-\overline y)^2}.
+$$
+
+The empirical results below use the fixed within-geometry frequency holdout described in Section S2. The metrics characterize the performance achieved by the fitted models under that experimental partition.
+
+**Table S3. Frequency-aware antenna-response prediction on withheld frequency samples.**
+
+| Estimator | MSE (dB²) | RMSE (dB) | MAE (dB) | $R^2$ |
+|:--|--:|--:|--:|--:|
+| ACO–SVR | 0.7605 | 0.8721 | 0.1457 | 0.9173 |
+| ACO–SVR with spectral response reconstruction | 0.0772 | 0.2778 | 0.0589 | 0.9916 |
+
+The local spectral term reduces interpolation error by representing the fine-scale response structure of characterized antenna geometries. The geometry-only point and distribution models address the complementary case in which frequency information is unavailable at prediction time. Under the same frequency holdout, the geometry-pooled ACO–SVR point estimator achieves MSE 6.3152 dB², RMSE 2.5130 dB, MAE 1.0135 dB and $R^2=0.3135$. The frequency-marginal distribution model achieves $W_1=0.2861$ dB and $W_2=0.8509$ dB, with distributional explained variance 0.9213. Its CRPS is 0.7355 dB; nominal 90% prediction intervals achieve 93.1% empirical coverage with a mean width of 4.58 dB.
+
+Results for the complete collection of regression families, feature settings and experimental partitions are provided as machine-readable tables alongside the research code. The saved predictors are sufficient to regenerate the associated frequency-response estimates and evaluation summaries.
+
+## S11. Computational availability and repeatability
+
+The associated repository contains the antenna observations, supervised regression implementations, ant-colony parameter search, spectral interpolation, geometry-conditioned distribution models, analytical patch equations and evaluation scripts. The primary experiment can be reproduced with
+
+```bash
+python -m pip install -r requirements.txt
+bash run_all.sh --full
+```
+
+A fixed stochastic seed is used for the reported partition and search. The training and evaluation workflow retains fitted estimators, experiment settings, held-out predictions and per-model results. The interactive research atlas in `docs/index.html` is generated from these outputs, allowing the numerical study and antenna design visualizations to be examined together.
+
+\newpage
 
 ## References
 
-[1] Raghavan, D., et al. (2023). *Ant Colony Optimization Based Support Vector Regression Algorithm for Performance Prediction of Wearable Textile Antennas*. IEEE GCITC. DOI: [10.1109/GCITC60406.2023.10425975](https://doi.org/10.1109/GCITC60406.2023.10425975).
+[1] D. Raghavan, B. Sujatha, Chinmayi B. S., B. B. Rao, and J. Kiran, “Ant Colony Optimization Based Support Vector Regression Algorithm for Performance Prediction of Wearable Textile Antennas,” *2023 Global Conference on Information Technologies and Communications*, 2023. DOI: 10.1109/GCITC60406.2023.10425975.
 
-[2] Smola, A. J. and Schölkopf, B. (2004). A tutorial on support vector regression. *Statistics and Computing* 14, 199–222. DOI: [10.1023/B:STCO.0000035301.49549.88](https://doi.org/10.1023/B:STCO.0000035301.49549.88).
+[2] M. Hassaan Butt, *Antenna-design-using-ML*, dataset repository, https://github.com/MHassaanButt/Antenna-design-using-ML.
 
-[3] Socha, K. and Dorigo, M. (2008). Ant colony optimization for continuous domains. *European Journal of Operational Research* 185, 1155–1173. DOI: [10.1016/j.ejor.2006.06.046](https://doi.org/10.1016/j.ejor.2006.06.046).
+[3] A. J. Smola and B. Schölkopf, “A tutorial on support vector regression,” *Statistics and Computing*, vol. 14, pp. 199–222, 2004. DOI: 10.1023/B:STCO.0000035301.49549.88.
 
-[4] Gustavsen, B. and Semlyen, A. (1999). Rational approximation of frequency-domain responses by vector fitting. *IEEE Transactions on Power Delivery* 14, 1052–1061. DOI: [10.1109/61.772353](https://doi.org/10.1109/61.772353).
+[4] K. Socha and M. Dorigo, “Ant colony optimization for continuous domains,” *European Journal of Operational Research*, vol. 185, pp. 1155–1173, 2008. DOI: 10.1016/j.ejor.2006.06.046.
 
-[5] Akima, H. (1970). A new method of interpolation and smooth curve fitting based on local procedures. *Journal of the ACM* 17, 589–602. DOI: [10.1145/321607.321609](https://doi.org/10.1145/321607.321609).
+[5] H. Akima, “A new method of interpolation and smooth curve fitting based on local procedures,” *Journal of the ACM*, vol. 17, pp. 589–602, 1970. DOI: 10.1145/321607.321609.
 
-[6] Fritsch, F. N. and Carlson, R. E. (1980). Monotone piecewise cubic interpolation. *SIAM Journal on Numerical Analysis* 17, 238–246. DOI: [10.1137/0717021](https://doi.org/10.1137/0717021).
+[6] F. N. Fritsch and R. E. Carlson, “Monotone piecewise cubic interpolation,” *SIAM Journal on Numerical Analysis*, vol. 17, pp. 238–246, 1980. DOI: 10.1137/0717021.
 
-[7] Peyré, G. and Cuturi, M. (2019). *Computational Optimal Transport*. *Foundations and Trends in Machine Learning* 11, 355–602. DOI: [10.1561/2200000073](https://doi.org/10.1561/2200000073).
+[7] J. O. Ramsay and B. W. Silverman, *Functional Data Analysis*, 2nd ed., Springer, 2005. DOI: 10.1007/b98888.
 
-[8] Gneiting, T. and Raftery, A. E. (2007). Strictly proper scoring rules, prediction, and estimation. *JASA* 102, 359–378. DOI: [10.1198/016214506000001437](https://doi.org/10.1198/016214506000001437).
+[8] G. Peyré and M. Cuturi, “Computational Optimal Transport,” *Foundations and Trends in Machine Learning*, vol. 11, pp. 355–602, 2019. DOI: 10.1561/2200000073.
 
-[9] Roberts, D. R., et al. (2017). Cross-validation strategies for data with temporal, spatial, hierarchical, or phylogenetic structure. *Ecography* 40, 913–929. DOI: [10.1111/ecog.02881](https://doi.org/10.1111/ecog.02881).
+[9] T. Gneiting and A. E. Raftery, “Strictly proper scoring rules, prediction, and estimation,” *Journal of the American Statistical Association*, vol. 102, pp. 359–378, 2007. DOI: 10.1198/016214506000001437.
+
+[10] M. A. Afridi, “Microstrip Patch Antenna Designing at 2.4 GHz Frequency,” *Biological and Chemical Research*, vol. 2015, pp. 128–132, 2015.

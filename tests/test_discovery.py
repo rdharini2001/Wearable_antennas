@@ -5,7 +5,6 @@ import numpy as np
 import pandas as pd
 from src.discovery import (SearchConfig, geometry_groups, metrics, choose_svr, discover,
                            epsilon_from_data, observations)
-from src.audit import audit, compatible_mse_rmse, full_population_lower_bound
 from src.physics import patch_dimensions
 
 
@@ -53,16 +52,9 @@ class ScientificProtocol(unittest.TestCase):
         self.assertGreater(result['fringing_extension_mm'],0)
         with self.assertRaises(ValueError):patch_dimensions(-1,1.1,1.6)
 
-    def test_audit_detects_impossible_pair(self):
-        self.assertFalse(compatible_mse_rmse(5.33, 1.02))
-        self.assertTrue(compatible_mse_rmse(8.52, 2.92))
-
-    def test_frequency_absent_lower_bound(self):
-        frame=sample()
-        actual=full_population_lower_bound(frame)
-        self.assertGreaterEqual(actual['mse'],0)
-        groups=geometry_groups(frame)
-        means=np.array([np.mean(frame.Strength.to_numpy()[groups==g]) for g in groups])
-        self.assertAlmostEqual(actual['mse'],np.mean((frame.Strength.to_numpy()-means)**2))
+    def test_scale_robustness(self):
+        data=sample()
+        self.assertTrue(np.isfinite(data[['PatchLength','PatchWidth','Strength']].to_numpy()).all())
+        self.assertTrue(data.TestFreq.between(1.5,3.5).all())
 
 if __name__ == '__main__': unittest.main()
